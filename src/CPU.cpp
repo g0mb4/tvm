@@ -13,3 +13,22 @@ void CPU::reset(){
     m_carry_flag = 0;
     m_zero_flag = 0;
 }
+
+void CPU::step(){
+    fetch();
+    decode();
+    execute();
+}
+
+void CPU::fetch(){
+    m_current_raw_instruction = m_bus->read(m_program_counter);
+    m_program_counter++;
+}
+
+void CPU::decode(){
+    m_current_instruction = std::make_shared<Instruction>(m_current_raw_instruction);
+}
+
+void CPU::execute(){
+
+}

@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "Bus.h"
+#include "Instruction.h"
 
 class CPU
 {
@@ -11,6 +12,8 @@ public:
     CPU(const std::shared_ptr<Bus> & bus);
 
     void reset();
+
+    void step();
 
     const uint16_t * registers() const { return m_registers; }
     uint16_t program_counter() const { return m_program_counter; }
@@ -25,5 +28,11 @@ private:
     bool m_carry_flag, m_zero_flag;
 
     std::shared_ptr<Bus> m_bus;
+    std::shared_ptr<Instruction> m_current_instruction;
+    uint16_t m_current_raw_instruction;
+
+    void fetch();
+    void decode();
+    void execute();
 };
 
