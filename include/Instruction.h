@@ -44,6 +44,8 @@ public:
 
     void add_additional_word(uint16_t);
 
+    uint16_t additional_word();
+
 private:
     std::string m_name;
     OpCode m_opcode;
@@ -56,6 +58,7 @@ private:
     uint16_t m_additional_word2;
 
     bool m_additional_word1_set {false};
+    bool m_additional_word1_get {false};
 
     static std::map<Instruction::OpCode, const char *> s_opcodes;
 };
