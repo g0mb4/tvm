@@ -12,6 +12,9 @@ void CPU::reset(){
     m_stack_pointer = 1800;
     m_carry_flag = 0;
     m_zero_flag = 0;
+
+    m_current_raw_instruction = 0;
+    m_current_instruction = nullptr;
 }
 
 void CPU::step(){
@@ -27,6 +30,7 @@ void CPU::fetch(){
 
 void CPU::decode(){
     m_current_instruction = std::make_shared<Instruction>(m_current_raw_instruction);
+    // TODO: fetch another word, if needed
 }
 
 void CPU::execute(){

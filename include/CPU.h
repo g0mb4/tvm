@@ -21,6 +21,8 @@ public:
     bool carry_flag() const { return m_carry_flag; }
     bool zero_flag() const { return m_zero_flag; }
 
+    const std::shared_ptr<Instruction> & current_instruction() const { return m_current_instruction; }
+
 private:
     uint16_t m_registers[8];
     uint16_t m_program_counter;

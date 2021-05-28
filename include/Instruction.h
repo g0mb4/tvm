@@ -18,6 +18,8 @@ public:
 
     Instruction(uint16_t data);
 
+    const std::string & name() const { return m_name; }
+
 private:
     std::string m_name;
     uint8_t m_opcode;

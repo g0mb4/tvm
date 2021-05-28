@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     load_program(MainWindow::test_program, MainWindow::test_program_size);
 
     connect(ui->actionQuit, &QAction::triggered, this, [this]{close();});
+    connect(ui->btn_step, &QPushButton::clicked, this, &MainWindow::step);
 }
 
 MainWindow::~MainWindow()
@@ -27,6 +28,7 @@ void MainWindow::load_program(const uint8_t * data, uint32_t len){
 
     update_memory_view();
     update_cpu_view();
+    update_status_bar();
 }
 
 std::string MainWindow::value_to_hex_string(uint16_t value){
@@ -67,5 +69,20 @@ void MainWindow::update_cpu_view(){
 
     ui->cb_carry->setChecked(m_cpu->carry_flag());
     ui->cb_zero->setChecked(m_cpu->zero_flag());
+}
+
+void MainWindow::update_status_bar(){
+    auto instruction = m_cpu->current_instruction();
+    if(instruction){
+        ui->statusbar->showMessage(QString::fromStdString(instruction->name()));
+    }
+}
+
+void MainWindow::step(){
+    m_cpu->step();
+
+    update_memory_view();
+    update_cpu_view();
+    update_status_bar();
 }
 

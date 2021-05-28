@@ -31,6 +31,9 @@ private:
     void load_program(const uint8_t * data, uint32_t len);
     void update_memory_view(uint32_t start_address = 0);
     void update_cpu_view();
+    void update_status_bar();
+
+    void step();
 
     std::string value_to_hex_string(uint16_t value);
 
