@@ -13,11 +13,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
+file(GLOB SRC
+    src/*.cpp
+    src/*.ui
+    include/*.h
+)
+
+include_directories(include)
+
 add_executable(tvm
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
+    ${SRC}
 )
 
 target_link_libraries(tvm PRIVATE Qt5::Widgets)
