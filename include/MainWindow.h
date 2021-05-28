@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <QMainWindow>
+#include <QMessageBox>
 
 #include "CPU.h"
 #include "Memory.h"

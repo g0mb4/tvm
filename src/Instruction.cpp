@@ -1,26 +1,27 @@
 #include "Instruction.h"
 
-std::map<uint8_t, const char *> Instruction::s_opcodes = {
-    {0x0, "mov"},
-    {0x1, "cmp"},
-    {0x2, "add"},
-    {0x3, "sub"},
-    {0x4, "mul"},
-    {0x5, "div"},
-    {0x6, "lea"},
-    {0x7, "inc"},
-    {0x8, "dec"},
-    {0x9, "jnz"},
-    {0xa, "jnc"},
-    {0xb, "shl"},
-    {0xc, "prn"},
-    {0xd, "jsr"},
-    {0xe, "rts"},
-    {0xf, "hlt"}
+std::map<Instruction::OpCode, const char *> Instruction::s_opcodes = {
+    {Instruction::OpCode::mov, "mov"},
+    {Instruction::OpCode::cmp, "cmp"},
+    {Instruction::OpCode::add, "add"},
+    {Instruction::OpCode::sub, "sub"},
+    {Instruction::OpCode::mul, "mul"},
+    {Instruction::OpCode::div, "div"},
+    {Instruction::OpCode::lea, "lea"},
+    {Instruction::OpCode::inc, "inc"},
+    {Instruction::OpCode::dec, "dec"},
+    {Instruction::OpCode::jnz, "jnz"},
+    {Instruction::OpCode::jnc, "jnc"},
+    {Instruction::OpCode::shl, "shl"},
+    {Instruction::OpCode::prn, "prn"},
+    {Instruction::OpCode::jsr, "jsr"},
+    {Instruction::OpCode::rts, "rts"},
+    {Instruction::OpCode::hlt, "hlt"}
 };
 
 Instruction::Instruction(uint16_t data){
-    m_opcode = (data >> 12) & 0xF;
+    uint8_t opcode = (data >> 12) & 0xF;
+    m_opcode = static_cast<OpCode>(opcode);
     m_name = std::string(s_opcodes[m_opcode]);
 
     uint8_t source_addr = (data >> 9) & 0x7;
@@ -30,4 +31,13 @@ Instruction::Instruction(uint16_t data){
     uint8_t dest_addr = (data >> 3) & 0x7;
     m_destination_addressing = static_cast<AddressingMode>(dest_addr);
     m_destination_register = data & 0x7;
+}
+
+void Instruction::add_additional_word(uint16_t word){
+    if(!m_additional_word1_set){
+        m_additional_word1 = word;
+        m_additional_word1_set = true;
+    } else {
+        m_additional_word2 = word;
+    }
 }

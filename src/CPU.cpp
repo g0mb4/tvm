@@ -18,8 +18,19 @@ void CPU::reset(){
 }
 
 void CPU::step(){
+    if(has_error())
+        return;
+
     fetch();
+
+    if(has_error())
+        return;
+
     decode();
+
+    if(has_error())
+        return;
+
     execute();
 }
 
@@ -28,11 +39,38 @@ void CPU::fetch(){
     m_program_counter++;
 }
 
+void CPU::fetch_data(){
+    m_additional_instruction_data = m_bus->read(m_program_counter);
+    m_program_counter++;
+}
+
 void CPU::decode(){
     m_current_instruction = std::make_shared<Instruction>(m_current_raw_instruction);
-    // TODO: fetch another word, if needed
+    if(m_current_instruction->opcode() == Instruction::OpCode::mov){
+        if(m_current_instruction->source_addressing() != Instruction::AddressingMode::DirectRegister
+           && m_current_instruction->source_addressing() != Instruction::AddressingMode::DirectRegister){
+            fetch_data();
+            m_current_instruction->add_additional_word(m_additional_instruction_data);
+        }
+
+        if(m_current_instruction->destination_addressing() != Instruction::AddressingMode::DirectRegister
+           && m_current_instruction->destination_addressing() != Instruction::AddressingMode::DirectRegister){
+            fetch_data();
+            m_current_instruction->add_additional_word(m_additional_instruction_data);
+        }
+    }
 }
 
 void CPU::execute(){
+    switch(m_current_instruction->opcode()){
+    case Instruction::OpCode::mov:
+        mov();
+        break;
+    default:
+        m_error_string = "Unsupported instruction: " + m_current_instruction->name();
+    }
+}
 
+void CPU::mov(){
+    m_error_string = "MOV is not supported yet";
 }

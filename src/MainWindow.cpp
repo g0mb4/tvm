@@ -81,8 +81,13 @@ void MainWindow::update_status_bar(){
 void MainWindow::step(){
     m_cpu->step();
 
-    update_memory_view();
-    update_cpu_view();
-    update_status_bar();
+    if(m_cpu->has_error()){
+        QMessageBox msgbox;
+        msgbox.critical(0, "Error", QString::fromStdString(m_cpu->error_string()));
+    } else {
+        update_memory_view();
+        update_cpu_view();
+        update_status_bar();
+    }
 }
 
