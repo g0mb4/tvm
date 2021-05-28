@@ -8,7 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     m_memory = std::make_shared<Memory>();
-    m_bus = std::make_shared<Bus>(m_memory);
+    m_display = std::make_shared<Display>();
+    m_bus = std::make_shared<Bus>(m_memory, m_display);
     m_cpu = std::make_shared<CPU>(m_bus);
 
     load_program(MainWindow::test_program, MainWindow::test_program_size);
@@ -22,13 +23,21 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::load_program(const uint8_t * data, uint32_t len){
-    m_memory->load(data, len);
+void MainWindow::reset(){
     m_cpu->reset();
+    m_display->reset();
+}
 
+void MainWindow::update_ui(){
     update_memory_view();
     update_cpu_view();
     update_status_bar();
+}
+
+void MainWindow::load_program(const uint8_t * data, uint32_t len){
+    m_memory->load(data, len);
+    reset();
+    update_ui();
 }
 
 std::string MainWindow::value_to_hex_string(uint16_t value){
@@ -85,9 +94,7 @@ void MainWindow::step(){
         QMessageBox msgbox;
         msgbox.critical(0, "Error", QString::fromStdString(m_cpu->error_string()));
     } else {
-        update_memory_view();
-        update_cpu_view();
-        update_status_bar();
+        update_ui();
     }
 }
 

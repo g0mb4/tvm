@@ -11,6 +11,7 @@
 #include "CPU.h"
 #include "Memory.h"
 #include "Bus.h"
+#include "Display.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,11 +29,15 @@ private:
     std::shared_ptr<CPU> m_cpu;
     std::shared_ptr<Memory> m_memory;
     std::shared_ptr<Bus> m_bus;
+    std::shared_ptr<Display> m_display;
 
     void load_program(const uint8_t * data, uint32_t len);
     void update_memory_view(uint32_t start_address = 0);
     void update_cpu_view();
     void update_status_bar();
+
+    void reset();
+    void update_ui();
 
     void step();
 
