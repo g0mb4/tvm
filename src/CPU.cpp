@@ -10,8 +10,8 @@ void CPU::reset(){
     memset(m_registers, 0, sizeof(uint16_t) * 8);
     m_program_counter = 0;
     m_stack_pointer = 1800;
-    m_carry_flag = 0;
-    m_zero_flag = 0;
+    m_carry_flag = false;
+    m_zero_flag = false;
 
     m_current_raw_instruction = 0;
     m_current_instruction = nullptr;
@@ -48,13 +48,13 @@ void CPU::decode(){
     m_current_instruction = std::make_shared<Instruction>(m_current_raw_instruction);
     if(m_current_instruction->opcode() == Instruction::OpCode::mov){
         if(m_current_instruction->source_addressing() != Instruction::AddressingMode::DirectRegister
-           && m_current_instruction->source_addressing() != Instruction::AddressingMode::DirectRegister){
+           && m_current_instruction->source_addressing() != Instruction::AddressingMode::IndirectRegister){
             fetch_data();
             m_current_instruction->add_additional_word(m_additional_instruction_data);
         }
 
         if(m_current_instruction->destination_addressing() != Instruction::AddressingMode::DirectRegister
-           && m_current_instruction->destination_addressing() != Instruction::AddressingMode::DirectRegister){
+           && m_current_instruction->destination_addressing() != Instruction::AddressingMode::IndirectRegister){
             fetch_data();
             m_current_instruction->add_additional_word(m_additional_instruction_data);
         }

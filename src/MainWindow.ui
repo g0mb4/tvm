@@ -331,7 +331,7 @@
       <string>Zero</string>
      </property>
      <property name="checkable">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QCheckBox" name="cb_carry">
@@ -347,7 +347,7 @@
       <string>Carry</string>
      </property>
      <property name="checkable">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
