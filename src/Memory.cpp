@@ -14,11 +14,11 @@ void Memory::load(const std::vector<uint8_t> & data){
 }
 
 // FIXME: check boundaries
-uint16_t Memory::read(uint32_t address) const{
+uint16_t Memory::read(uint32_t address) const {
     return m_data[address];
 }
 
 // FIXME: check boundaries
-void Memory::write(uint32_t address, uint16_t value){
+void Memory::write(uint32_t address, uint16_t value) {
     m_data[address] = value;
 }

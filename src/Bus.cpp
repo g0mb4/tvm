@@ -1,13 +1,14 @@
 #include "Bus.h"
 
-Bus::Bus(const std::shared_ptr<Memory> & memory, const std::shared_ptr<Display> & display)
- : m_memory(memory)
- , m_display(display)
-{}
+void Bus::add(const std::shared_ptr<BusDevice> & device){
+    m_devices.emplace_back(device);
+}
 
 uint16_t Bus::read(uint32_t address) const{
-    if(address < Memory::size){
-        return m_memory->read(address);
+    for(auto & device : m_devices){
+        if(address >= device->start_address() && address <= device->end_address()){
+            return device->read(address);
+        }
     }
 
     // FIXME: report error
@@ -15,12 +16,11 @@ uint16_t Bus::read(uint32_t address) const{
 }
 
 void Bus::write(uint32_t address, uint16_t value){
-    if(address == Display::address){
-        m_display->add_character((char)value);
-    }
-
-    if(address < Memory::size){
-        m_memory->write(address, value);
+    for(auto & device : m_devices){
+        if(address >= device->start_address() && address <= device->end_address()){
+            device->write(address, value);
+            return;
+        }
     }
 
     // FIXME: report error

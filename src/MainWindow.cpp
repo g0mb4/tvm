@@ -7,10 +7,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    m_bus = std::make_shared<Bus>();
     m_memory = std::make_shared<Memory>();
     m_display = std::make_shared<Display>();
-    m_bus = std::make_shared<Bus>(m_memory, m_display);
     m_cpu = std::make_shared<CPU>(m_bus);
+
+    m_bus->add(m_memory);
+    m_bus->add(m_display);
 
     load_program(MainWindow::test_program, MainWindow::test_program_size);
 
