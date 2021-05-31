@@ -78,6 +78,9 @@ void CPU::execute(){
     case Instruction::OpCode::mov:
         mov();
         break;
+    case Instruction::OpCode::lea:
+        lea();
+        break;
     default:
         m_error_string = "Unsupported instruction: " + m_current_instruction->name() + " (" + Helpers::value_to_hex_string(m_current_raw_instruction) + ")";
     }
@@ -108,6 +111,30 @@ void CPU::mov(){
         break;
     default:
         m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        return;
+    };
+}
+
+void CPU::lea(){
+    uint16_t source = 0;
+    uint16_t destination = 0;
+
+    switch (m_current_instruction->source_addressing()) {
+    case Instruction::AddressingMode::Direct:
+        source =m_current_instruction->additional_word_source();
+        break;
+    default:
+        m_error_string = "Unsupported 'lea' source addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        return;
+    };
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::DirectRegister:
+        destination = m_current_instruction->destination_register();
+        m_registers[destination] = source;
+        break;
+    default:
+        m_error_string = "Unsupported 'lea' destination addressing:" + std::to_string((int)m_current_instruction->source_addressing());
         return;
     };
 }

@@ -41,5 +41,6 @@ private:
     void execute();
 
     void mov();
+    void lea();
 };
 
