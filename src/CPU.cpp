@@ -79,6 +79,7 @@ void CPU::decode(){
     }
 }
 
+// NOTE: std::map??
 void CPU::execute(){
     switch(m_current_instruction->opcode()){
     case Instruction::OpCode::mov:
@@ -95,6 +96,9 @@ void CPU::execute(){
         break;
     case Instruction::OpCode::prn:
         prn();
+        break;
+    case Instruction::OpCode::sub:
+        sub();
         break;
     default:
         m_error_string = "Unsupported instruction: " + m_current_instruction->name() + " (" + Helpers::value_to_hex_string(m_current_raw_instruction) + ")";
@@ -187,4 +191,31 @@ void CPU::prn(){
         m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
         return;
     }
+}
+
+void CPU::sub() {
+        uint16_t source, destination, address, reg;
+
+        switch (m_current_instruction->source_addressing()) {
+        case Instruction::AddressingMode::Instant:
+                source = m_current_instruction->additional_word_source();
+                break;
+        case Instruction::AddressingMode::Direct:
+                address = m_current_instruction->additional_word_source();
+                source = m_bus->read(address);
+                break;
+        default:
+                m_error_string = "Unsupported 'sub' source addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+                return;
+        };
+
+        switch (m_current_instruction->destination_addressing()) {
+        case Instruction::AddressingMode::DirectRegister:
+                destination = m_current_instruction->destination_register();
+                m_registers[destination] -= source;
+                break;
+        default:
+                m_error_string = "Unsupported 'sub' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
+                return;
+        };
 }

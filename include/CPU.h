@@ -49,5 +49,6 @@ private:
     void jnz();
     void hlt();
     void prn();
+    void sub();
 };
 
