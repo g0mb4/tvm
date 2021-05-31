@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>708</width>
-    <height>600</height>
+    <width>707</width>
+    <height>667</height>
    </rect>
   </property>
   <property name="font">
@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>210</y>
+      <y>270</y>
       <width>341</width>
       <height>331</height>
      </rect>
@@ -50,7 +50,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>10</y>
+      <y>80</y>
       <width>371</width>
       <height>181</height>
      </rect>
@@ -377,13 +377,39 @@
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>371</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Display</string>
+    </property>
+    <widget class="QLineEdit" name="txb_display">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>351</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>708</width>
+     <width>707</width>
      <height>24</height>
     </rect>
    </property>

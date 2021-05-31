@@ -35,6 +35,7 @@ void MainWindow::update_ui(){
     update_memory_view();
     update_cpu_view();
     update_status_bar();
+    update_display();
 }
 
 void MainWindow::load_program(const uint8_t * data, uint32_t len){
@@ -75,6 +76,10 @@ void MainWindow::update_cpu_view(){
 
     ui->cb_carry->setChecked(m_cpu->carry_flag());
     ui->cb_zero->setChecked(m_cpu->zero_flag());
+}
+
+void MainWindow::update_display(){
+    ui->txb_display->setText(QString::fromStdString(m_display->message()));
 }
 
 void MainWindow::update_status_bar(){
