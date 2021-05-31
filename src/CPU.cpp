@@ -252,10 +252,11 @@ void CPU::jnc() {
         uint16_t destination;
 
         switch (m_current_instruction->destination_addressing()) {
-  /*      case Instruction::AddressingMode::Relative:
+        // FIXME: Works, but not sure ....
+        case Instruction::AddressingMode::Relative:
                 destination = m_current_instruction->additional_word_destination();
-                m_program_counter = destination;
-                break;*/
+                m_program_counter = 0 - destination;
+                break;
         default:
                 m_error_string = "Unimplemented 'jnc' destination addressing: " + m_current_instruction->destination_addressing_string();
                 return;
