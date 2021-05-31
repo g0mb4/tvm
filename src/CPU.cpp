@@ -36,12 +36,20 @@ void CPU::step(){
 
 void CPU::fetch(){
     m_current_raw_instruction = m_bus->read(m_program_counter);
-    m_program_counter++;
+    if(m_bus->has_error()){
+        m_error_string = m_bus->error_string();
+    } else {
+        m_program_counter++;
+    }
 }
 
 void CPU::fetch_data(){
     m_additional_instruction_data = m_bus->read(m_program_counter);
-    m_program_counter++;
+    if(m_bus->has_error()){
+        m_error_string = m_bus->error_string();
+    } else {
+        m_program_counter++;
+    }
 }
 
 void CPU::decode(){

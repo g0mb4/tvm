@@ -5,8 +5,9 @@
 
 #include "Bus.h"
 #include "Instruction.h"
+#include "Error.h"
 
-class CPU
+class CPU : public Error
 {
 public:
     CPU(const std::shared_ptr<Bus> & bus);
@@ -23,16 +24,11 @@ public:
 
     const std::shared_ptr<Instruction> & current_instruction() const { return m_current_instruction; }
 
-    bool has_error() const { return !m_error_string.empty(); }
-    const std::string & error_string() const { return m_error_string; }
-
 private:
     uint16_t m_registers[8];
     uint16_t m_program_counter;
     uint16_t m_stack_pointer;
     bool m_carry_flag, m_zero_flag;
-
-    std::string m_error_string;
 
     std::shared_ptr<Bus> m_bus;
     std::shared_ptr<Instruction> m_current_instruction;
