@@ -100,17 +100,15 @@ void CPU::execute(){
 }
 
 void CPU::mov(){
-    uint16_t source = 0;
-    uint16_t destination = 0;
+    uint16_t source, destination, address, reg;
 
     switch (m_current_instruction->source_addressing()) {
     case Instruction::AddressingMode::Instant:
         source = m_current_instruction->additional_word_source();
         break;
-    case Instruction::AddressingMode::Direct:{
-        uint16_t address = m_current_instruction->additional_word_source();
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_source();
         source = m_bus->read(address);
-        }
         break;
     default:
         m_error_string = "Unsupported 'mov' source addressing:" + std::to_string((int)m_current_instruction->source_addressing());
@@ -129,8 +127,7 @@ void CPU::mov(){
 }
 
 void CPU::lea(){
-    uint16_t source = 0;
-    uint16_t destination = 0;
+    uint16_t source, destination;
 
     switch (m_current_instruction->source_addressing()) {
     case Instruction::AddressingMode::Direct:
@@ -175,11 +172,12 @@ void CPU::hlt(){
 }
 
 void CPU::prn(){
-    uint16_t destination, address;
+    uint16_t destination, address, reg;
 
     switch (m_current_instruction->destination_addressing()) {
     case Instruction::AddressingMode::IndirectRegister:
-        address = m_current_instruction->destination_register();
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
         destination = m_bus->read(address);
         m_bus->write(Display::address, destination);
         break;

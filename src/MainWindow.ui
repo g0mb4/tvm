@@ -368,12 +368,25 @@
       <rect>
        <x>10</x>
        <y>40</y>
-       <width>89</width>
+       <width>101</width>
        <height>25</height>
       </rect>
      </property>
      <property name="text">
       <string>Step</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_reset">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>101</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Reset CPU</string>
      </property>
     </widget>
    </widget>

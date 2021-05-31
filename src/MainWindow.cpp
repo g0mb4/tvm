@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionQuit, &QAction::triggered, this, [this]{close();});
     connect(ui->btn_step, &QPushButton::clicked, this, &MainWindow::step);
+    connect(ui->btn_reset, &QPushButton::clicked, this, [this]{ m_cpu->reset(); m_display->reset(); update_ui();});
 }
 
 MainWindow::~MainWindow()
