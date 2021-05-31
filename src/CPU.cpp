@@ -100,6 +100,12 @@ void CPU::execute(){
     case Instruction::OpCode::sub:
         sub();
         break;
+    case Instruction::OpCode::inc:
+        inc();
+        break;
+    case Instruction::OpCode::jnc:
+        jnc();
+        break;
     default:
         m_error_string = "Unsupported instruction: " + m_current_instruction->name() + " (" + Helpers::value_to_hex_string(m_current_raw_instruction) + ")";
     }
@@ -117,7 +123,7 @@ void CPU::mov(){
         source = m_bus->read(address);
         break;
     default:
-        m_error_string = "Unsupported 'mov' source addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        m_error_string = "Unimplemented 'mov' source addressing: " + m_current_instruction->source_addressing_string();
         return;
     };
 
@@ -127,7 +133,7 @@ void CPU::mov(){
         m_registers[destination] = source;
         break;
     default:
-        m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
+            m_error_string = "Unimplemented 'mov' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
     };
 }
@@ -140,7 +146,7 @@ void CPU::lea(){
         source = m_current_instruction->additional_word_source();
         break;
     default:
-        m_error_string = "Unsupported 'lea' source addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        m_error_string = "Unimplemented 'lea' source addressing: " + m_current_instruction->source_addressing_string();
         return;
     };
 
@@ -150,7 +156,7 @@ void CPU::lea(){
         m_registers[destination] = source;
         break;
     default:
-        m_error_string = "Unsupported 'lea' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
+        m_error_string = "Unimplemented 'lea' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
     };
 }
@@ -168,7 +174,7 @@ void CPU::jnz(){
         m_program_counter = destination;
         break;
     default:
-        m_error_string = "Unsupported 'jnz' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
+        m_error_string = "Unimplemented 'jnz' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
     };
 }
@@ -188,7 +194,7 @@ void CPU::prn(){
         m_bus->write(Display::address, destination);
         break;
     default:
-        m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
+        m_error_string = "Unimplemented 'mov' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
     }
 }
@@ -205,17 +211,53 @@ void CPU::sub() {
                 source = m_bus->read(address);
                 break;
         default:
-                m_error_string = "Unsupported 'sub' source addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+                m_error_string = "Unimplemented 'sub' source addressing: " + m_current_instruction->source_addressing_string();
                 return;
         };
 
         switch (m_current_instruction->destination_addressing()) {
         case Instruction::AddressingMode::DirectRegister:
                 destination = m_current_instruction->destination_register();
+
+                m_carry_flag = source > m_registers[destination];
                 m_registers[destination] -= source;
+                m_zero_flag == m_registers[destination] == 0;
+
                 break;
         default:
-                m_error_string = "Unsupported 'sub' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
+                m_error_string = "Unimplemented 'sub' destination addressing: " + m_current_instruction->destination_addressing_string();
+                return;
+        };
+}
+
+void CPU::inc() {
+        uint16_t destination;
+
+        switch (m_current_instruction->destination_addressing()) {
+        case Instruction::AddressingMode::DirectRegister:
+                destination = m_current_instruction->destination_register();
+                m_registers[destination] += 1;
+                break;
+        default:
+                m_error_string = "Unimplemented 'inc' destination addressing: " + m_current_instruction->destination_addressing_string();
+                return;
+        };
+}
+
+void CPU::jnc() {
+        if (m_carry_flag) {
+                return;
+        }
+
+        uint16_t destination;
+
+        switch (m_current_instruction->destination_addressing()) {
+  /*      case Instruction::AddressingMode::Relative:
+                destination = m_current_instruction->additional_word_destination();
+                m_program_counter = destination;
+                break;*/
+        default:
+                m_error_string = "Unimplemented 'jnc' destination addressing: " + m_current_instruction->destination_addressing_string();
                 return;
         };
 }

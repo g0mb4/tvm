@@ -50,5 +50,7 @@ private:
     void hlt();
     void prn();
     void sub();
+    void inc();
+    void jnc();
 };
 

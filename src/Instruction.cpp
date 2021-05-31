@@ -75,3 +75,14 @@ Instruction::Instruction(uint16_t data){
             m_destination_register = data & 0x7;
     }
 }
+
+const std::string Instruction::addressing_to_string(AddressingMode mode) const {
+        switch (mode) {
+        case AddressingMode::Instant: return "Istant";
+        case AddressingMode::Direct: return "Direct";
+        case AddressingMode::Indirect: return "Indirect";
+        case AddressingMode::Relative: return "Relative";
+        case AddressingMode::DirectRegister: return "Direct Register";
+        case AddressingMode::IndirectRegister: return "Indirect Register";
+        }
+}
