@@ -19,6 +19,7 @@ std::map<Instruction::OpCode, const char *> Instruction::s_opcodes = {
     {Instruction::OpCode::hlt, "hlt"}
 };
 
+// FIXME: check if instruction is valid
 Instruction::Instruction(uint16_t data){
     uint8_t opcode = (data >> 12) & 0xF;
     m_opcode = static_cast<OpCode>(opcode);
@@ -31,24 +32,4 @@ Instruction::Instruction(uint16_t data){
     uint8_t dest_addr = (data >> 3) & 0x7;
     m_destination_addressing = static_cast<AddressingMode>(dest_addr);
     m_destination_register = data & 0x7;
-}
-
-// NOTE: maybe rework this
-void Instruction::add_additional_word(uint16_t word){
-    if(!m_additional_word1_set){
-        m_additional_word1 = word;
-        m_additional_word1_set = true;
-    } else {
-        m_additional_word2 = word;
-    }
-}
-
-// NOTE: maybe rework this
-uint16_t Instruction::additional_word(){
-    if(!m_additional_word1_get){
-        m_additional_word1_get = true;
-        return m_additional_word1;
-    } else {
-        return m_additional_word2;
-    }
 }

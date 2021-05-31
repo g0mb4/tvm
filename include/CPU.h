@@ -34,10 +34,9 @@ private:
     std::shared_ptr<Bus> m_bus;
     std::shared_ptr<Instruction> m_current_instruction;
     uint16_t m_current_raw_instruction;
-    uint16_t m_additional_instruction_data;
 
     void fetch();
-    void fetch_data();
+    uint16_t fetch_data();
     void decode();
     void execute();
 

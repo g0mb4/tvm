@@ -43,29 +43,33 @@ void CPU::fetch(){
     }
 }
 
-void CPU::fetch_data(){
-    m_additional_instruction_data = m_bus->read(m_program_counter);
+uint16_t CPU::fetch_data(){
+    uint16_t data = m_bus->read(m_program_counter);
     if(m_bus->has_error()){
         m_error_string = m_bus->error_string();
     } else {
         m_program_counter++;
     }
+
+    return data;
 }
 
 void CPU::decode(){
     m_current_instruction = std::make_shared<Instruction>(m_current_raw_instruction);
-    if(m_current_instruction->opcode() == Instruction::OpCode::mov){
-        if(m_current_instruction->source_addressing() != Instruction::AddressingMode::DirectRegister
-           && m_current_instruction->source_addressing() != Instruction::AddressingMode::IndirectRegister){
-            fetch_data();
-            m_current_instruction->add_additional_word(m_additional_instruction_data);
-        }
 
-        if(m_current_instruction->destination_addressing() != Instruction::AddressingMode::DirectRegister
-           && m_current_instruction->destination_addressing() != Instruction::AddressingMode::IndirectRegister){
-            fetch_data();
-            m_current_instruction->add_additional_word(m_additional_instruction_data);
-        }
+    if(!m_current_instruction->is_valid()){
+        m_error_string = "Invalid instruction: " + Helpers::value_to_hex_string(m_current_raw_instruction);
+        return;
+    }
+
+    if(m_current_instruction->source_addressing() != Instruction::AddressingMode::DirectRegister
+      && m_current_instruction->source_addressing() != Instruction::AddressingMode::IndirectRegister){
+        m_current_instruction->add_additional_word_source(fetch_data());
+    }
+
+    if(m_current_instruction->destination_addressing() != Instruction::AddressingMode::DirectRegister
+      && m_current_instruction->destination_addressing() != Instruction::AddressingMode::IndirectRegister){
+        m_current_instruction->add_additional_word_destination(fetch_data());
     }
 }
 
