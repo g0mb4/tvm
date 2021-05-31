@@ -90,6 +90,10 @@ void MainWindow::update_status_bar(){
 }
 
 void MainWindow::step(){
+    if(m_cpu->is_halted()){
+        return;
+    }
+
     m_cpu->step();
 
     update_ui();

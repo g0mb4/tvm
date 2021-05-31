@@ -13,6 +13,8 @@ void CPU::reset(){
     m_carry_flag = false;
     m_zero_flag = false;
 
+    m_halted = false;
+
     m_current_raw_instruction = 0;
     m_current_instruction = nullptr;
 }
@@ -85,6 +87,9 @@ void CPU::execute(){
         break;
     case Instruction::OpCode::jnz:
         jnz();
+        break;
+    case Instruction::OpCode::hlt:
+        hlt();
         break;
     default:
         m_error_string = "Unsupported instruction: " + m_current_instruction->name() + " (" + Helpers::value_to_hex_string(m_current_raw_instruction) + ")";
@@ -160,4 +165,8 @@ void CPU::jnz(){
         m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->source_addressing());
         return;
     };
+}
+
+void CPU::hlt(){
+    m_halted = true;
 }

@@ -25,6 +25,8 @@ public:
 
     const std::shared_ptr<Instruction> & current_instruction() const { return m_current_instruction; }
 
+    bool is_halted() const { return m_halted; }
+
 private:
     uint16_t m_registers[8];
     uint16_t m_program_counter;
@@ -35,6 +37,8 @@ private:
     std::shared_ptr<Instruction> m_current_instruction;
     uint16_t m_current_raw_instruction;
 
+    bool m_halted { false };
+
     void fetch();
     uint16_t fetch_data();
     void decode();
@@ -43,5 +47,6 @@ private:
     void mov();
     void lea();
     void jnz();
+    void hlt();
 };
 

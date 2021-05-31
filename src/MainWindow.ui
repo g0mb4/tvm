@@ -361,7 +361,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>Program</string>
+     <string>Control</string>
     </property>
     <widget class="QPushButton" name="btn_step">
      <property name="geometry">
