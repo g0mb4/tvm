@@ -10,8 +10,8 @@ void CPU::reset(){
     memset(m_registers, 0, sizeof(uint16_t) * 8);
     m_program_counter = 0;
     m_stack_pointer = 1800;
-    m_carry_flag = false;
-    m_zero_flag = false;
+    m_carry_flag = true;
+    m_zero_flag = true;
 
     m_halted = false;
 
@@ -91,6 +91,9 @@ void CPU::execute(){
     case Instruction::OpCode::hlt:
         hlt();
         break;
+    case Instruction::OpCode::prn:
+        prn();
+        break;
     default:
         m_error_string = "Unsupported instruction: " + m_current_instruction->name() + " (" + Helpers::value_to_hex_string(m_current_raw_instruction) + ")";
     }
@@ -120,7 +123,7 @@ void CPU::mov(){
         m_registers[destination] = source;
         break;
     default:
-        m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
         return;
     };
 }
@@ -144,7 +147,7 @@ void CPU::lea(){
         m_registers[destination] = source;
         break;
     default:
-        m_error_string = "Unsupported 'lea' destination addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        m_error_string = "Unsupported 'lea' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
         return;
     };
 }
@@ -162,11 +165,26 @@ void CPU::jnz(){
         m_program_counter = destination;
         break;
     default:
-        m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        m_error_string = "Unsupported 'jnz' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
         return;
     };
 }
 
 void CPU::hlt(){
     m_halted = true;
+}
+
+void CPU::prn(){
+    uint16_t destination, address;
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::IndirectRegister:
+        address = m_current_instruction->destination_register();
+        destination = m_bus->read(address);
+        m_bus->write(Display::address, destination);
+        break;
+    default:
+        m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->destination_addressing());
+        return;
+    }
 }

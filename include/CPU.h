@@ -48,5 +48,6 @@ private:
     void lea();
     void jnz();
     void hlt();
+    void prn();
 };
 
