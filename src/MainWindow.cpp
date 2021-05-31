@@ -49,6 +49,7 @@ void MainWindow::update_memory_view(uint32_t start_address){
     const uint16_t * memory = m_memory->data();
     std::string content;
 
+    // FIXME: fix this on windows
     for(int i = start_address; i < Memory::size; i++){
         if(i % 5 == 0){
             content += Helpers::value_to_hex_string(i) + ": ";

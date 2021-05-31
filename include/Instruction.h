@@ -36,8 +36,10 @@ public:
     };
 
     struct InstructionDescription {
-        const char * name;
+        const std::string name;
         uint8_t number_of_operands;
+        const std::string allowed_source_addressing_modes;
+        const std::string allowed_destination_addressing_modes;
     };
 
     Instruction(uint16_t);
