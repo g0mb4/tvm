@@ -41,6 +41,8 @@ public:
     OpCode opcode() const { return m_opcode; }
     AddressingMode source_addressing() const { return m_source_addressing; }
     AddressingMode destination_addressing() const { return m_destination_addressing; }
+    uint8_t source_register() const { return m_source_register; }
+    uint8_t destination_register() const { return m_destination_register; }
 
     void add_additional_word_source(uint16_t word) { m_additional_word_source = word; }
     void add_additional_word_destination(uint16_t word) { m_additional_word_destination = word; }

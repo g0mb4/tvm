@@ -84,5 +84,30 @@ void CPU::execute(){
 }
 
 void CPU::mov(){
-    m_error_string = "MOV is not supported yet";
+    uint16_t source = 0;
+    uint16_t destination = 0;
+
+    switch (m_current_instruction->source_addressing()) {
+    case Instruction::AddressingMode::Instant:
+        source = m_current_instruction->additional_word_source();
+        break;
+    case Instruction::AddressingMode::Direct:{
+        uint16_t address = m_current_instruction->additional_word_source();
+        source = m_bus->read(address);
+        }
+        break;
+    default:
+        m_error_string = "Unsupported 'mov' source addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        return;
+    };
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::DirectRegister:
+        destination = m_current_instruction->destination_register();
+        m_registers[destination] = source;
+        break;
+    default:
+        m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        return;
+    };
 }
