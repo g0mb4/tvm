@@ -35,10 +35,18 @@ public:
         IndirectRegister
     };
 
+    struct InstructionDescription {
+        const char * name;
+        uint8_t number_of_operands;
+    };
+
     Instruction(uint16_t);
 
     const std::string & name() const { return m_name; }
     OpCode opcode() const { return m_opcode; }
+
+    uint8_t number_of_operands() const { return m_number_of_operands; }
+
     AddressingMode source_addressing() const { return m_source_addressing; }
     AddressingMode destination_addressing() const { return m_destination_addressing; }
     uint8_t source_register() const { return m_source_register; }
@@ -54,6 +62,7 @@ public:
 private:
     std::string m_name;
     OpCode m_opcode;
+    uint8_t m_number_of_operands;
     AddressingMode m_source_addressing;
     uint8_t m_source_register;
     AddressingMode m_destination_addressing;
@@ -64,5 +73,5 @@ private:
 
     bool m_valid {true};
 
-    static std::map<Instruction::OpCode, const char *> s_opcodes;
+    static std::map<Instruction::OpCode, InstructionDescription> s_opcodes;
 };

@@ -62,12 +62,14 @@ void CPU::decode(){
         return;
     }
 
-    if(m_current_instruction->source_addressing() != Instruction::AddressingMode::DirectRegister
+    uint8_t no_ops = m_current_instruction->number_of_operands();
+
+    if(no_ops == 2 && m_current_instruction->source_addressing() != Instruction::AddressingMode::DirectRegister
       && m_current_instruction->source_addressing() != Instruction::AddressingMode::IndirectRegister){
         m_current_instruction->add_additional_word_source(fetch_data());
     }
 
-    if(m_current_instruction->destination_addressing() != Instruction::AddressingMode::DirectRegister
+    if((no_ops == 2 || no_ops == 1) && m_current_instruction->destination_addressing() != Instruction::AddressingMode::DirectRegister
       && m_current_instruction->destination_addressing() != Instruction::AddressingMode::IndirectRegister){
         m_current_instruction->add_additional_word_destination(fetch_data());
     }
@@ -80,6 +82,9 @@ void CPU::execute(){
         break;
     case Instruction::OpCode::lea:
         lea();
+        break;
+    case Instruction::OpCode::jnz:
+        jnz();
         break;
     default:
         m_error_string = "Unsupported instruction: " + m_current_instruction->name() + " (" + Helpers::value_to_hex_string(m_current_raw_instruction) + ")";
@@ -121,7 +126,7 @@ void CPU::lea(){
 
     switch (m_current_instruction->source_addressing()) {
     case Instruction::AddressingMode::Direct:
-        source =m_current_instruction->additional_word_source();
+        source = m_current_instruction->additional_word_source();
         break;
     default:
         m_error_string = "Unsupported 'lea' source addressing:" + std::to_string((int)m_current_instruction->source_addressing());
@@ -135,6 +140,24 @@ void CPU::lea(){
         break;
     default:
         m_error_string = "Unsupported 'lea' destination addressing:" + std::to_string((int)m_current_instruction->source_addressing());
+        return;
+    };
+}
+
+void CPU::jnz(){
+    if(m_zero_flag){
+        return;
+    }
+
+    uint16_t destination;
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::Direct:
+        destination = m_current_instruction->additional_word_destination();
+        m_program_counter = destination;
+        break;
+    default:
+        m_error_string = "Unsupported 'mov' destination addressing:" + std::to_string((int)m_current_instruction->source_addressing());
         return;
     };
 }

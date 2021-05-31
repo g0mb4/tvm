@@ -42,5 +42,6 @@ private:
 
     void mov();
     void lea();
+    void jnz();
 };
 
