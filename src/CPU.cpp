@@ -17,6 +17,8 @@ void CPU::reset(){
 
     m_current_raw_instruction = 0;
     m_current_instruction = nullptr;
+
+    clear_error();
 }
 
 void CPU::step(){
