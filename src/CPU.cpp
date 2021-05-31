@@ -75,7 +75,7 @@ void CPU::execute(){
         mov();
         break;
     default:
-        m_error_string = "Unsupported instruction: " + m_current_instruction->name();
+        m_error_string = "Unsupported instruction: " + m_current_instruction->name() + " (" + Helpers::value_to_hex_string(m_current_raw_instruction) + ")";
     }
 }
 

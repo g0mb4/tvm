@@ -7,6 +7,7 @@
 #include "Memory.h"
 #include "Display.h"
 #include "Error.h"
+#include "Helpers.h"
 
 class Bus: public Error {
 public:

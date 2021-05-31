@@ -11,7 +11,7 @@ uint16_t Bus::read(uint32_t address){
         }
     }
 
-    m_error_string = "No device is registered at address";
+    m_error_string = "No device is registered at address: " + Helpers::value_to_hex_string(address);
     return 0;
 }
 
@@ -23,5 +23,5 @@ void Bus::write(uint32_t address, uint16_t value){
         }
     }
 
-     m_error_string = "No device is registered at address";
+     m_error_string = "No device is registered at address " + Helpers::value_to_hex_string(address);
 }

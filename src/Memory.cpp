@@ -13,12 +13,12 @@ void Memory::load(const std::vector<uint8_t> & data){
     load(data.data(), data.size());
 }
 
-// FIXME: check boundaries
+// NOTE: boundaries checked by the Bus
 uint16_t Memory::read(uint32_t address) const {
     return m_data[address];
 }
 
-// FIXME: check boundaries
+// NOTE: boundaries checked by the Bus
 void Memory::write(uint32_t address, uint16_t value) {
     m_data[address] = value;
 }

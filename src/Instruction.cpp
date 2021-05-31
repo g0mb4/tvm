@@ -33,6 +33,7 @@ Instruction::Instruction(uint16_t data){
     m_destination_register = data & 0x7;
 }
 
+// NOTE: maybe rework this
 void Instruction::add_additional_word(uint16_t word){
     if(!m_additional_word1_set){
         m_additional_word1 = word;
@@ -42,6 +43,7 @@ void Instruction::add_additional_word(uint16_t word){
     }
 }
 
+// NOTE: maybe rework this
 uint16_t Instruction::additional_word(){
     if(!m_additional_word1_get){
         m_additional_word1_get = true;

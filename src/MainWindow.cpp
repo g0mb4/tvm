@@ -43,22 +43,16 @@ void MainWindow::load_program(const uint8_t * data, uint32_t len){
     update_ui();
 }
 
-std::string MainWindow::value_to_hex_string(uint16_t value){
-    char hex[5];
-    snprintf(hex, sizeof(hex), "%04X", value);
-    return std::string(hex);
-}
-
 void MainWindow::update_memory_view(uint32_t start_address){
     const uint16_t * memory = m_memory->data();
     std::string content;
 
     for(int i = start_address; i < Memory::size; i++){
         if(i % 5 == 0){
-            content += value_to_hex_string(i) + ": ";
+            content += Helpers::value_to_hex_string(i) + ": ";
         }
 
-        content += value_to_hex_string(memory[i]) + " ";
+        content += Helpers::value_to_hex_string(memory[i]) + " ";
     }
 
     ui->te_memory_view->setText(QString::fromStdString(content));
@@ -67,17 +61,17 @@ void MainWindow::update_memory_view(uint32_t start_address){
 void MainWindow::update_cpu_view(){
     const uint16_t * regs = m_cpu->registers();
 
-    ui->tb_r0->setText(QString::fromStdString(value_to_hex_string(regs[0])));
-    ui->tb_r1->setText(QString::fromStdString(value_to_hex_string(regs[1])));
-    ui->tb_r2->setText(QString::fromStdString(value_to_hex_string(regs[2])));
-    ui->tb_r3->setText(QString::fromStdString(value_to_hex_string(regs[3])));
-    ui->tb_r4->setText(QString::fromStdString(value_to_hex_string(regs[4])));
-    ui->tb_r5->setText(QString::fromStdString(value_to_hex_string(regs[5])));
-    ui->tb_r6->setText(QString::fromStdString(value_to_hex_string(regs[6])));
-    ui->tb_r7->setText(QString::fromStdString(value_to_hex_string(regs[7])));
+    ui->tb_r0->setText(QString::fromStdString(Helpers::value_to_hex_string(regs[0])));
+    ui->tb_r1->setText(QString::fromStdString(Helpers::value_to_hex_string(regs[1])));
+    ui->tb_r2->setText(QString::fromStdString(Helpers::value_to_hex_string(regs[2])));
+    ui->tb_r3->setText(QString::fromStdString(Helpers::value_to_hex_string(regs[3])));
+    ui->tb_r4->setText(QString::fromStdString(Helpers::value_to_hex_string(regs[4])));
+    ui->tb_r5->setText(QString::fromStdString(Helpers::value_to_hex_string(regs[5])));
+    ui->tb_r6->setText(QString::fromStdString(Helpers::value_to_hex_string(regs[6])));
+    ui->tb_r7->setText(QString::fromStdString(Helpers::value_to_hex_string(regs[7])));
 
-    ui->tb_pc->setText(QString::fromStdString(value_to_hex_string(m_cpu->program_counter())));
-    ui->tb_sp->setText(QString::fromStdString(value_to_hex_string(m_cpu->stack_pointer())));
+    ui->tb_pc->setText(QString::fromStdString(Helpers::value_to_hex_string(m_cpu->program_counter())));
+    ui->tb_sp->setText(QString::fromStdString(Helpers::value_to_hex_string(m_cpu->stack_pointer())));
 
     ui->cb_carry->setChecked(m_cpu->carry_flag());
     ui->cb_zero->setChecked(m_cpu->zero_flag());
