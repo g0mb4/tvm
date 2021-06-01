@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget *parent, int argc, char ** argv)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
@@ -15,17 +15,34 @@ MainWindow::MainWindow(QWidget *parent)
     m_bus->add(m_memory);
     m_bus->add(m_display);
 
-    //load_program(MainWindow::test_program, MainWindow::test_program_size);
-
     connect(ui->actionQuit, &QAction::triggered, this, [this]{close();});
     connect(ui->btn_step, &QPushButton::clicked, this, &MainWindow::step);
     connect(ui->btn_reset, &QPushButton::clicked, this, [this]{ m_cpu->reset(); m_display->reset(); update_ui();});
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::btn_open_file);
+
+    parse_args(argc, argv);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::parse_args(int argc, char ** argv){
+    char * file_name = nullptr;
+
+    for(int a = 1; a < argc; a++){
+        if(strcmp(argv[a], "-s") == 0 || strcmp(argv[a], "--start") == 0){
+            // start program
+        } else {
+            file_name = strdup(argv[a]);
+        }
+    }
+
+    if(file_name){
+        open_file(file_name);
+        free(file_name);
+    }
 }
 
 void MainWindow::reset(){
@@ -124,7 +141,7 @@ void MainWindow::open_file(const char * file_name){
 
     if(fp == nullptr){
         QMessageBox msgbox;
-        msgbox.critical(0, "Error", "Unable to open the file.");
+        msgbox.critical(0, "Error", "Unable to open the file: " + QString(file_name));
         return;
     }
 

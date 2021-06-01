@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent, int argc, char ** argv);
     ~MainWindow();
 
 private:
@@ -32,6 +32,8 @@ private:
     std::shared_ptr<Memory> m_memory;
     std::shared_ptr<Bus> m_bus;
     std::shared_ptr<Display> m_display;
+
+    void parse_args(int argc, char ** argv);
 
     void load_program(const uint8_t * data, uint32_t len);
 
