@@ -23,5 +23,5 @@ public:
 private:
     uint16_t m_data[size] {};
 
-    bool is_big_endian() const;
+    bool is_host_big_endian() const;
 };
