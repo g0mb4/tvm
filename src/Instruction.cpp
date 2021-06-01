@@ -1,20 +1,20 @@
 #include "Instruction.h"
 
 std::map<Instruction::OpCode, Instruction::InstructionDescription> Instruction::s_opcodes = {
-    {Instruction::OpCode::mov, {"mov", 2, "012345", "12345"}},
-    {Instruction::OpCode::cmp, {"cmp", 2, "012345", "012345"}},
-    {Instruction::OpCode::add, {"add", 2, "012345", "12345"}},
-    {Instruction::OpCode::sub, {"sub", 2, "012345", "12345"}},
-    {Instruction::OpCode::mul, {"mul", 2, "012345", "12345"}},
-    {Instruction::OpCode::div, {"div", 2, "012345", "12345"}},
-    {Instruction::OpCode::lea, {"lea", 2, "1", "12345"}},
-    {Instruction::OpCode::inc, {"inc", 1, "", "12345"}},
-    {Instruction::OpCode::dec, {"dec", 1, "", "12345"}},
-    {Instruction::OpCode::jnz, {"jnz", 1, "", "1235"}},
-    {Instruction::OpCode::jnc, {"jnc", 1, "", "1235"}},
-    {Instruction::OpCode::shl, {"shl", 2, "12345", "012345"}},
-    {Instruction::OpCode::prn, {"prn", 1, "", "012345" }},
-    {Instruction::OpCode::jsr, {"jsr", 1, "", "1235"}},
+    {Instruction::OpCode::mov, {"mov", 2, "01234", "1234"}},
+    {Instruction::OpCode::cmp, {"cmp", 2, "01234", "01234"}},
+    {Instruction::OpCode::add, {"add", 2, "01234", "1234"}},
+    {Instruction::OpCode::sub, {"sub", 2, "01234", "1234"}},
+    {Instruction::OpCode::mul, {"mul", 2, "01234", "1234"}},
+    {Instruction::OpCode::div, {"div", 2, "01234", "1234"}},
+    {Instruction::OpCode::lea, {"lea", 2, "1", "1234"}},
+    {Instruction::OpCode::inc, {"inc", 1, "", "1234"}},
+    {Instruction::OpCode::dec, {"dec", 1, "", "1234"}},
+    {Instruction::OpCode::jnz, {"jnz", 1, "", "124"}},
+    {Instruction::OpCode::jnc, {"jnc", 1, "", "124"}},
+    {Instruction::OpCode::shl, {"shl", 2, "1234", "01234"}},
+    {Instruction::OpCode::prn, {"prn", 1, "", "01234" }},
+    {Instruction::OpCode::jsr, {"jsr", 1, "", "124"}},
     {Instruction::OpCode::rts, {"rts", 0, "", ""}},
     {Instruction::OpCode::hlt, {"hlt", 0, "", ""}}
 };
@@ -81,8 +81,8 @@ const std::string Instruction::addressing_to_string(AddressingMode mode) const {
         case AddressingMode::Instant: return "Istant";
         case AddressingMode::Direct: return "Direct";
         case AddressingMode::Indirect: return "Indirect";
-        case AddressingMode::Relative: return "Relative";
         case AddressingMode::DirectRegister: return "Direct Register";
         case AddressingMode::IndirectRegister: return "Indirect Register";
+        default: return "Unknown";
         }
 }

@@ -30,7 +30,6 @@ public:
         Instant = 0,
         Direct,
         Indirect,
-        Relative,
         DirectRegister,
         IndirectRegister
     };

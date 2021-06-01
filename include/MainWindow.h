@@ -43,9 +43,25 @@ private:
 
     void step();
 
-    static constexpr uint8_t test_program[] = {0x02, 0x21, 0x00, 0x14, 0x62, 0x22, 0x00, 0x0d, 0x90, 0x08, 0x00, 0x0c, 0xc0, 0x2a,
-                                               0x30, 0x21, 0x00, 0x01, 0x70, 0x22, 0xa0, 0x18, 0xff, 0xfa, 0xf0, 0x00, 0x00, 0x61,
-                                               0x00, 0x62, 0x00, 0x63, 0x00, 0x64, 0x00, 0x65, 0x00, 0x66, 0x00, 0x00, 0x00, 0x06};
+    static constexpr uint8_t test_program[] = {0x02, 0x19,
+                                               0x00, 0x12,
+                                               0x62, 0x1a,
+                                               0x00, 0x0b,
+                                               0xc0, 0x22,
+                                               0x70, 0x1a,
+                                               0x30, 0x19,
+                                               0x00, 0x01,
+                                               0x90, 0x08,
+                                               0x00, 0x04,
+                                               0xf0, 0x00,
+                                               0x00, 0x61,
+                                               0x00, 0x62,
+                                               0x00, 0x63,
+                                               0x00, 0x64,
+                                               0x00, 0x65,
+                                               0x00, 0x66,
+                                               0x00, 0x00,
+                                               0x00, 0x06};
     static constexpr uint32_t test_program_size = sizeof(test_program);
 
     Ui::MainWindow *ui;
