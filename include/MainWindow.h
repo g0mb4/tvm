@@ -4,10 +4,12 @@
 
 #include <string>
 #include <memory>
+#include <thread>
 
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QTimer>
 
 #include "Helpers.h"
 #include "CPU.h"
@@ -32,6 +34,7 @@ private:
     std::shared_ptr<Memory> m_memory;
     std::shared_ptr<Bus> m_bus;
     std::shared_ptr<Display> m_display;
+    std::unique_ptr<QTimer> m_timer;
 
     void parse_args(int argc, char ** argv);
 
@@ -46,6 +49,8 @@ private:
     void update_ui();
 
     void step();
+    void run();
+    bool m_running {false};
 
     void btn_open_file();
     void open_file(const char * file_name);

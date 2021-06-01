@@ -15,10 +15,17 @@ MainWindow::MainWindow(QWidget *parent, int argc, char ** argv)
     m_bus->add(m_memory);
     m_bus->add(m_display);
 
+    m_timer = std::make_unique<QTimer>(this);
+
     connect(ui->actionQuit, &QAction::triggered, this, [this]{close();});
     connect(ui->btn_step, &QPushButton::clicked, this, &MainWindow::step);
-    connect(ui->btn_reset, &QPushButton::clicked, this, [this]{ m_cpu->reset(); m_display->reset(); update_ui();});
+    connect(ui->btn_run, &QPushButton::clicked, this, &MainWindow::run);
+    connect(ui->btn_reset, &QPushButton::clicked, this, [this]{ m_cpu->reset(); m_display->reset();});
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::btn_open_file);
+
+    connect(m_timer.get(), &QTimer::timeout, this, &MainWindow::update_ui);
+
+    m_timer->start(16);
 
     parse_args(argc, argv);
 }
@@ -60,7 +67,6 @@ void MainWindow::update_ui(){
 void MainWindow::load_program(const uint8_t * data, uint32_t len){
     m_memory->load(data, len);
     reset();
-    update_ui();
 }
 
 void MainWindow::update_memory_view(uint32_t start_address){
@@ -116,8 +122,6 @@ void MainWindow::step(){
 
     m_cpu->step();
 
-    update_ui();
-
     if(m_cpu->has_error()){
         QMessageBox msgbox;
         msgbox.critical(0, "Error", QString::fromStdString(m_cpu->error_string()));
@@ -155,5 +159,26 @@ void MainWindow::open_file(const char * file_name){
     fclose(fp);
 
     load_program(data.data(), data.size());
+}
+
+void MainWindow::run(){
+    m_running = true;
+
+    m_cpu->reset();
+    m_display->reset();
+
+    std::unique_ptr<std::thread> worker = std::make_unique<std::thread>(
+        [this]{
+            while(m_running && !m_cpu->is_halted()){
+                step();
+
+                if(m_cpu->has_error()){
+                    m_running = false;
+                }
+            }
+        }
+    );
+
+    worker->detach();
 }
 

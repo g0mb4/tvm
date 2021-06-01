@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Threads)
 
 file(GLOB SRC
     src/*.cpp
@@ -25,4 +26,4 @@ add_executable(tvm
     ${SRC}
 )
 
-target_link_libraries(tvm PRIVATE Qt5::Widgets)
+target_link_libraries(tvm PRIVATE Qt5::Widgets ${CMAKE_THREAD_LIBS_INIT})
