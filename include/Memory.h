@@ -22,4 +22,6 @@ public:
     const uint16_t * data() const { return m_data; }
 private:
     uint16_t m_data[size] {};
+
+    bool is_big_endian() const;
 };

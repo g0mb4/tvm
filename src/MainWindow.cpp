@@ -15,11 +15,12 @@ MainWindow::MainWindow(QWidget *parent)
     m_bus->add(m_memory);
     m_bus->add(m_display);
 
-    load_program(MainWindow::test_program, MainWindow::test_program_size);
+    //load_program(MainWindow::test_program, MainWindow::test_program_size);
 
     connect(ui->actionQuit, &QAction::triggered, this, [this]{close();});
     connect(ui->btn_step, &QPushButton::clicked, this, &MainWindow::step);
     connect(ui->btn_reset, &QPushButton::clicked, this, [this]{ m_cpu->reset(); m_display->reset(); update_ui();});
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::btn_open_file);
 }
 
 MainWindow::~MainWindow()
@@ -104,5 +105,38 @@ void MainWindow::step(){
         QMessageBox msgbox;
         msgbox.critical(0, "Error", QString::fromStdString(m_cpu->error_string()));
     }
+}
+
+void MainWindow::btn_open_file(){
+    QString file_name = QFileDialog::getOpenFileName(this, "Open Binary File", "", "Binary file (*.bin)");
+
+    if(file_name.isEmpty()){
+        return;
+    } else {
+        open_file(file_name.toStdString().c_str());
+    }
+}
+
+void MainWindow::open_file(const char * file_name){
+    FILE * fp = nullptr;
+
+    fp = fopen(file_name, "rb");
+
+    if(fp == nullptr){
+        QMessageBox msgbox;
+        msgbox.critical(0, "Error", "Unable to open the file.");
+        return;
+    }
+
+    uint8_t byte;
+    std::vector<uint8_t> data;
+
+    while(fread(&byte, sizeof(uint8_t), 1, fp) == 1){
+        data.emplace_back(byte);
+    }
+
+    fclose(fp);
+
+    load_program(data.data(), data.size());
 }
 

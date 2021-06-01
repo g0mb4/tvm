@@ -10,8 +10,8 @@ void CPU::reset(){
     memset(m_registers, 0, sizeof(uint16_t) * 8);
     m_program_counter = 0;
     m_stack_pointer = 1800;
-    m_carry_flag = true;
-    m_zero_flag = true;
+    m_carry_flag = false;
+    m_zero_flag = false;
 
     m_halted = false;
 
