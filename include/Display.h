@@ -8,7 +8,7 @@ class Display: public BusDevice {
 public:
     static constexpr uint32_t address = 3000;
 
-    Display() : BusDevice(Display::address, Display::address) {}
+    Display() : BusDevice(Display::address, Display::address) { reset(); }
 
     void reset() { m_message = ""; }
 

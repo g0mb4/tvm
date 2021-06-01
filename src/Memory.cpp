@@ -1,17 +1,17 @@
 #include "Memory.h"
 
 void Memory::load(const uint8_t * data, uint32_t len){
-    // NOTE: Memory::size is in words
     if(len >= Memory::size * 2){
+        m_error_string = "Not enough memory.";
         return;
     }
 
-    // data is not valid
     if(len % 2 != 0){
+        m_error_string = "Data is corrupt.";
         return;
     }
 
-    memset(m_data, 0, sizeof(uint16_t) * Memory::size);
+    reset();
 
     bool big_endian = is_host_big_endian();
     uint16_t value = 0;
