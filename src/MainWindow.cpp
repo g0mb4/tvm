@@ -37,10 +37,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::parse_args(int argc, char ** argv){
     char * file_name = nullptr;
+    bool autostart = false;
 
     for(int a = 1; a < argc; a++){
         if(strcmp(argv[a], "-s") == 0 || strcmp(argv[a], "--start") == 0){
-            // start program
+            autostart = true;
         } else {
             file_name = strdup(argv[a]);
         }
@@ -49,6 +50,10 @@ void MainWindow::parse_args(int argc, char ** argv){
     if(file_name){
         open_file(file_name);
         free(file_name);
+
+        if(autostart){
+            run();
+        }
     }
 }
 
