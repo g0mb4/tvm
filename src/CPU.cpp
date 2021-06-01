@@ -221,7 +221,7 @@ void CPU::sub() {
 
                 m_carry_flag = source > m_registers[destination];
                 m_registers[destination] -= source;
-                m_zero_flag == m_registers[destination] == 0;
+                m_zero_flag = m_registers[destination] == 0;
 
                 break;
         default:
