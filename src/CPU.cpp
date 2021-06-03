@@ -1,4 +1,5 @@
 #include "CPU.h"
+#include "Stack.h"
 
 CPU::CPU(const std::shared_ptr<Bus> & bus)
  : m_bus(bus)
@@ -9,7 +10,7 @@ CPU::CPU(const std::shared_ptr<Bus> & bus)
 void CPU::reset(){
     memset(m_registers, 0, sizeof(uint16_t) * 8);
     m_program_counter = 0;
-    m_stack_pointer = Memory::stack_start;
+    m_stack_pointer = Stack::start;
     m_carry_flag = false;
     m_zero_flag = false;
 

@@ -11,8 +11,6 @@
 class Memory : public BusDevice, public Error {
 public:
     static constexpr uint32_t size = 2000;
-    static constexpr uint32_t stack_start = size - 1;
-    static constexpr uint32_t stack_size = 16;
 
     Memory() : BusDevice(0, Memory::size - 1) { reset(); }
 
@@ -30,9 +28,6 @@ public:
 
     uint16_t read(uint32_t address) const override;
     void write(uint32_t address, uint16_t value) override;
-
-    void stack_push(uint16_t &, uint16_t);
-    uint16_t stack_pop(uint16_t &);
 
     const uint16_t * data() const { return m_data; }
 private:

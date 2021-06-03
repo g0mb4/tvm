@@ -49,24 +49,3 @@ bool Memory::is_host_big_endian() const {
         return true;
     }
 }
-
-void Memory::stack_push(uint16_t &stack_pointer, uint16_t data){
-    if(stack_pointer - 1 < stack_start - stack_size){
-        m_error_string = "Stack is full.";
-        return;
-    }
-
-    m_data[stack_pointer] = data;
-    stack_pointer--;
-}
-
-uint16_t Memory::stack_pop(uint16_t &stack_pointer){
-    if(stack_pointer + 1 < size){
-        m_error_string = "Stack is out of the bounds.";
-        return 0;
-    }
-
-    stack_pointer++;
-    return m_data[stack_pointer];
-
-}

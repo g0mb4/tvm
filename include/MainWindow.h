@@ -16,6 +16,7 @@
 #include "Memory.h"
 #include "Bus.h"
 #include "Display.h"
+#include "Stack.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -34,6 +35,7 @@ private:
     std::shared_ptr<Memory> m_memory;
     std::shared_ptr<Bus> m_bus;
     std::shared_ptr<Display> m_display;
+    std::shared_ptr<Stack> m_stack;
     std::unique_ptr<QTimer> m_timer;
 
     void parse_args(int argc, char ** argv);
