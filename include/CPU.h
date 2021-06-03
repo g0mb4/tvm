@@ -8,11 +8,12 @@
 #include "Error.h"
 #include "Helpers.h"
 #include "Memory.h"
+#include "Stack.h"
 
 class CPU : public Error
 {
 public:
-    CPU(const std::shared_ptr<Bus> & bus);
+    CPU(const std::shared_ptr<Bus> & bus, const std::shared_ptr<Stack> & stack);
 
     void reset();
 
@@ -35,6 +36,7 @@ private:
     bool m_carry_flag, m_zero_flag;
 
     std::shared_ptr<Bus> m_bus;
+    std::shared_ptr<Stack> m_stack;
     std::shared_ptr<Instruction> m_current_instruction;
     uint16_t m_current_raw_instruction;
 
@@ -53,5 +55,7 @@ private:
     void sub();
     void inc();
     void jnc();
+    void jsr();
+    void rts();
 };
 

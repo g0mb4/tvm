@@ -14,7 +14,7 @@ public:
     Stack(const std::shared_ptr<Memory> & memory) : m_memory(memory) {}
 
     void push(uint16_t & stack_pointer, uint16_t value){
-        if(stack_pointer - 1 < end){
+        if(stack_pointer < end){
             m_error_string = "Stack is full.";
             return;
         }

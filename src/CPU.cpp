@@ -1,8 +1,8 @@
 #include "CPU.h"
 #include "Stack.h"
 
-CPU::CPU(const std::shared_ptr<Bus> & bus)
- : m_bus(bus)
+CPU::CPU(const std::shared_ptr<Bus> & bus, const std::shared_ptr<Stack> & stack)
+ : m_bus(bus), m_stack(stack)
 {
     reset();
 }
@@ -106,6 +106,12 @@ void CPU::execute(){
         break;
     case Instruction::OpCode::jnc:
         jnc();
+        break;
+    case Instruction::OpCode::jsr:
+        jsr();
+        break;
+    case Instruction::OpCode::rts:
+        rts();
         break;
     default:
         m_error_string = "Unsupported instruction: " + m_current_instruction->name() + " (" + Helpers::value_to_hex_string(m_current_raw_instruction) + ")";

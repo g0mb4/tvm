@@ -150,3 +150,35 @@ void CPU::jnc() {
                 return;
         };
 }
+
+void CPU::jsr(){
+    uint16_t destination;
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::Direct:
+        destination = m_current_instruction->additional_word_destination();
+
+        m_stack->push(m_stack_pointer, m_program_counter);
+
+        if(m_stack->has_error()){
+            m_error_string = m_stack->error_string();
+            return;
+        }
+
+        m_program_counter = destination;
+        break;
+    default:
+        m_error_string = "Unimplemented 'jsr' destination addressing: " + m_current_instruction->destination_addressing_string();
+        return;
+    };
+}
+
+void CPU::rts(){
+    uint16_t return_point = m_stack->pop(m_stack_pointer);
+    if(m_stack->has_error()){
+        m_error_string = m_stack->error_string();
+        return;
+    }
+
+    m_program_counter = return_point;
+}
