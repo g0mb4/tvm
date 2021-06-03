@@ -3,12 +3,12 @@
 #include <string>
 
 class Error {
- public:
+public:
     bool has_error() const { return !m_error_string.empty(); }
-    const std::string & error_string() const { return m_error_string; }
+    const std::string& error_string() const { return m_error_string; }
 
     void clear_error() { m_error_string = ""; }
 
- protected:
+protected:
     std::string m_error_string;
 };

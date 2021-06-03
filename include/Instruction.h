@@ -2,8 +2,8 @@
 
 #include <stdint.h>
 
-#include <string>
 #include <map>
+#include <string>
 
 class Instruction {
 public:
@@ -43,7 +43,7 @@ public:
 
     Instruction(uint16_t);
 
-    const std::string & name() const { return m_name; }
+    const std::string& name() const { return m_name; }
     OpCode opcode() const { return m_opcode; }
 
     uint8_t number_of_operands() const { return m_number_of_operands; }
@@ -63,6 +63,7 @@ public:
     const std::string destination_addressing_string() const { return addressing_to_string(m_destination_addressing); };
 
     bool is_valid() const { return m_valid; }
+
 private:
     std::string m_name;
     OpCode m_opcode;
@@ -75,7 +76,7 @@ private:
     uint16_t m_additional_word_source;
     uint16_t m_additional_word_destination;
 
-    bool m_valid {true};
+    bool m_valid { true };
 
     const std::string addressing_to_string(AddressingMode) const;
 

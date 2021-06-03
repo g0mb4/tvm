@@ -4,28 +4,27 @@
 #include <string.h>
 
 #include "Bus.h"
-#include "Instruction.h"
 #include "Error.h"
 #include "Helpers.h"
+#include "Instruction.h"
 #include "Memory.h"
 #include "Stack.h"
 
-class CPU : public Error
-{
+class CPU : public Error {
 public:
-    CPU(const std::shared_ptr<Bus> & bus, const std::shared_ptr<Stack> & stack);
+    CPU(const std::shared_ptr<Bus>& bus, const std::shared_ptr<Stack>& stack);
 
     void reset();
 
     void step();
 
-    const uint16_t * registers() const { return m_registers; }
+    const uint16_t* registers() const { return m_registers; }
     uint16_t program_counter() const { return m_program_counter; }
     uint16_t stack_pointer() const { return m_stack_pointer; }
     bool carry_flag() const { return m_carry_flag; }
     bool zero_flag() const { return m_zero_flag; }
 
-    const std::shared_ptr<Instruction> & current_instruction() const { return m_current_instruction; }
+    const std::shared_ptr<Instruction>& current_instruction() const { return m_current_instruction; }
 
     bool is_halted() const { return m_halted; }
 
@@ -58,4 +57,3 @@ private:
     void jsr();
     void rts();
 };
-

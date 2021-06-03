@@ -2,32 +2,33 @@
 
 #include <stdio.h>
 
-#include <string>
 #include <memory>
+#include <string>
 #include <thread>
 
+#include <QFileDialog>
 #include <QMainWindow>
 #include <QMessageBox>
-#include <QFileDialog>
 #include <QTimer>
 
-#include "Helpers.h"
-#include "CPU.h"
-#include "Memory.h"
 #include "Bus.h"
+#include "CPU.h"
 #include "Display.h"
+#include "Helpers.h"
+#include "Memory.h"
 #include "Stack.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent, int argc, char ** argv);
+    MainWindow(QWidget* parent, int argc, char** argv);
     ~MainWindow();
 
 private:
@@ -38,9 +39,9 @@ private:
     std::shared_ptr<Stack> m_stack;
     std::unique_ptr<QTimer> m_timer;
 
-    void parse_args(int argc, char ** argv);
+    void parse_args(int argc, char** argv);
 
-    void load_program(const uint8_t * data, uint32_t len);
+    void load_program(const uint8_t* data, uint32_t len);
 
     void update_memory_view(uint32_t start_address = 0);
     void update_cpu_view();
@@ -52,10 +53,10 @@ private:
 
     void step();
     void run();
-    bool m_running {false};
+    bool m_running { false };
 
     void btn_open_file();
-    void open_file(const char * file_name);
+    void open_file(const char* file_name);
 
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
 };

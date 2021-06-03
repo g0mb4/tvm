@@ -1,15 +1,15 @@
 #pragma once
 
-#include<memory>
-#include<vector>
+#include <memory>
+#include <vector>
 
 #include "BusDevice.h"
-#include "Memory.h"
 #include "Display.h"
 #include "Error.h"
 #include "Helpers.h"
+#include "Memory.h"
 
-class Bus: public Error {
+class Bus : public Error {
 public:
     void add(const std::shared_ptr<BusDevice>&);
 
