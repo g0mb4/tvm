@@ -16,9 +16,17 @@ public:
     {
     }
 
+    void reset()
+    {
+        clear_error();
+        for (uint16_t i = end; i <= start; i++) {
+            m_memory->write(i, 0);
+        }
+    }
+
     void push(uint16_t& stack_pointer, uint16_t value)
     {
-        if (stack_pointer < end) {
+        if (stack_pointer - 1 < end) {
             m_error_string = "Stack is full.";
             return;
         }

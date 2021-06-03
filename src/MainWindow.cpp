@@ -64,8 +64,9 @@ void MainWindow::reset()
 {
     m_cpu->reset();
     m_display->reset();
-
+    m_bus->clear_error();
     m_memory->soft_reset();
+    m_stack->reset();
 }
 
 void MainWindow::update_ui()
@@ -127,11 +128,16 @@ void MainWindow::update_stack_view()
     const uint16_t* memory = m_memory->data();
     std::string content;
 
-    for (uint32_t i = Stack::end + 1; i <= Stack::start; i++) {
+    for (uint32_t i = Stack::end; i <= Stack::start; i++) {
+
+        content += Helpers::value_to_hex_string(i) + ": " + Helpers::value_to_hex_string(memory[i]);
+
         if (i == m_cpu->stack_pointer()) {
-            content += Helpers::value_to_hex_string(i) + ": " + Helpers::value_to_hex_string(memory[i]) + " <--\n";
+            content += " <--\n";
+        } else if (i == Stack::end) {
+            content += " NON-STACK\n";
         } else {
-            content += Helpers::value_to_hex_string(i) + ": " + Helpers::value_to_hex_string(memory[i]) + "\n";
+            content += "\n";
         }
     }
 
