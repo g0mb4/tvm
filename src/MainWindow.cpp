@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent, int argc, char **argv)
   connect(ui->actionQuit, &QAction::triggered, this, [this] { close(); });
   connect(ui->btn_step, &QPushButton::clicked, this, &MainWindow::step);
   connect(ui->btn_run, &QPushButton::clicked, this, &MainWindow::run);
+  connect(ui->btn_stop, &QPushButton::clicked, this, [this]{ m_running = false; });
   connect(ui->btn_reset, &QPushButton::clicked, this, [this] { reset(); });
   connect(ui->actionOpen, &QAction::triggered, this,
           &MainWindow::btn_open_file);

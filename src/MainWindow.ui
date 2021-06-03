@@ -25,7 +25,7 @@
      <rect>
       <x>20</x>
       <y>270</y>
-      <width>341</width>
+      <width>661</width>
       <height>331</height>
      </rect>
     </property>
@@ -37,7 +37,7 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>321</width>
+       <width>641</width>
        <height>291</height>
       </rect>
      </property>
@@ -369,7 +369,7 @@
        <x>10</x>
        <y>40</y>
        <width>101</width>
-       <height>25</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
@@ -380,26 +380,39 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
-       <width>101</width>
-       <height>25</height>
+       <y>140</y>
+       <width>231</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>Reset CPU</string>
+      <string>Reset Machine</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_run">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>40</y>
+       <x>10</x>
+       <y>90</y>
        <width>101</width>
-       <height>25</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
       <string>Run</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_stop">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>90</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Stop</string>
      </property>
     </widget>
    </widget>
