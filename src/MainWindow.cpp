@@ -171,6 +171,10 @@ void MainWindow::open_file(const char *file_name) {
 
   fclose(fp);
 
+  const QFileInfo info(file_name);
+
+  setWindowTitle(QString::fromStdString(std::string("tvm - ")) + info.baseName());
+
   load_program(data.data(), data.size());
 }
 
