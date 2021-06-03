@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent, int argc, char **argv)
 
   connect(m_timer.get(), &QTimer::timeout, this, &MainWindow::update_ui);
 
-  m_timer->start(16);
+  m_timer->start(33);
 
   parse_args(argc, argv);
 }
