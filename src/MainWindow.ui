@@ -25,7 +25,7 @@
      <rect>
       <x>20</x>
       <y>270</y>
-      <width>661</width>
+      <width>371</width>
       <height>331</height>
      </rect>
     </property>
@@ -37,7 +37,7 @@
       <rect>
        <x>10</x>
        <y>80</y>
-       <width>641</width>
+       <width>351</width>
        <height>241</height>
       </rect>
      </property>
@@ -471,6 +471,38 @@
        <width>351</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_5">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>200</y>
+      <width>241</width>
+      <height>401</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Stack</string>
+    </property>
+    <widget class="QTextEdit" name="te_stack_view">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>221</width>
+       <height>351</height>
+      </rect>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
      <property name="readOnly">
       <bool>true</bool>

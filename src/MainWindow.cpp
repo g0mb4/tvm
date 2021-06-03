@@ -73,8 +73,17 @@ void MainWindow::update_ui()
     bool ok;
     uint32_t memory_view_start = ui->txb_memory_start->text().toUInt(&ok, 16);
     if (ok) {
+        if (memory_view_start >= Memory::size) {
+            QMessageBox msgbox;
+            msgbox.critical(0, "Error", "Memory address is too large.");
+            ui->txb_memory_start->setText("0");
+            return;
+        }
+
         update_memory_view(memory_view_start);
     }
+
+    update_stack_view();
     update_cpu_view();
     update_status_bar();
     update_display();
@@ -92,20 +101,41 @@ void MainWindow::update_memory_view(uint32_t start_address)
     std::string content;
 
     int number_of_lines = 0;
-    for (int i = start_address; i < Memory::size; i++) {
-        if (i % 12 == 0) {
+    for (int i = start_address, j = 0; i < Memory::size; i++, j++) {
+        if (j % 6 == 0) {
             if (number_of_lines > 11) {
                 break;
             }
 
-            content += Helpers::value_to_hex_string(i) + ": ";
+            if (j == 0) {
+                content += Helpers::value_to_hex_string(i) + ": ";
+            } else {
+                content += '\n' + Helpers::value_to_hex_string(i) + ": ";
+            }
+
             number_of_lines++;
         }
 
-        content += Helpers::value_to_hex_string(memory[i]) + " ";
+        content += Helpers::value_to_hex_string(memory[i]) + ' ';
     }
 
     ui->te_memory_view->setText(QString::fromStdString(content));
+}
+
+void MainWindow::update_stack_view()
+{
+    const uint16_t* memory = m_memory->data();
+    std::string content;
+
+    for (uint32_t i = Stack::end + 1; i <= Stack::start; i++) {
+        if (i == m_cpu->stack_pointer()) {
+            content += Helpers::value_to_hex_string(i) + ": " + Helpers::value_to_hex_string(memory[i]) + " <--\n";
+        } else {
+            content += Helpers::value_to_hex_string(i) + ": " + Helpers::value_to_hex_string(memory[i]) + "\n";
+        }
+    }
+
+    ui->te_stack_view->setText(QString::fromStdString(content));
 }
 
 void MainWindow::update_cpu_view()
