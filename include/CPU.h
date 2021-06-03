@@ -7,6 +7,7 @@
 #include "Instruction.h"
 #include "Error.h"
 #include "Helpers.h"
+#include "Memory.h"
 
 class CPU : public Error
 {

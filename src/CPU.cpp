@@ -9,7 +9,7 @@ CPU::CPU(const std::shared_ptr<Bus> & bus)
 void CPU::reset(){
     memset(m_registers, 0, sizeof(uint16_t) * 8);
     m_program_counter = 0;
-    m_stack_pointer = 1800;
+    m_stack_pointer = Memory::stack_start;
     m_carry_flag = false;
     m_zero_flag = false;
 
