@@ -89,6 +89,20 @@ Instruction::Instruction(uint16_t data)
     }
 }
 
+bool Instruction::needs_additional_source_word() const
+{
+    return m_number_of_operands == 2
+        && m_source_addressing != Instruction::AddressingMode::DirectRegister
+        && m_source_addressing != Instruction::AddressingMode::IndirectRegister;
+}
+
+bool Instruction::needs_additional_destination_word() const
+{
+    return (m_number_of_operands == 2 || m_number_of_operands == 1)
+        && m_destination_addressing != Instruction::AddressingMode::DirectRegister
+        && m_destination_addressing != Instruction::AddressingMode::IndirectRegister;
+}
+
 const std::string Instruction::addressing_to_string(AddressingMode mode) const
 {
     switch (mode) {

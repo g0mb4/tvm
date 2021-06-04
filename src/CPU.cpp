@@ -73,15 +73,15 @@ void CPU::decode()
         return;
     }
 
-    uint8_t no_ops = m_current_instruction->number_of_operands();
-
-    if (no_ops == 2 && m_current_instruction->source_addressing() != Instruction::AddressingMode::DirectRegister
-        && m_current_instruction->source_addressing() != Instruction::AddressingMode::IndirectRegister) {
+    if (m_current_instruction->needs_additional_source_word()) {
         m_current_instruction->add_additional_word_source(fetch_data());
     }
 
-    if ((no_ops == 2 || no_ops == 1) && m_current_instruction->destination_addressing() != Instruction::AddressingMode::DirectRegister
-        && m_current_instruction->destination_addressing() != Instruction::AddressingMode::IndirectRegister) {
+    if (has_error()) {
+        return;
+    }
+
+    if (m_current_instruction->needs_additional_destination_word()) {
         m_current_instruction->add_additional_word_destination(fetch_data());
     }
 }

@@ -49,8 +49,6 @@ public:
     const std::string& name() const { return m_name; }
     OpCode opcode() const { return m_opcode; }
 
-    uint8_t number_of_operands() const { return m_number_of_operands; }
-
     AddressingMode source_addressing() const { return m_source_addressing; }
     AddressingMode destination_addressing() const { return m_destination_addressing; }
     uint8_t source_register() const { return m_source_register; }
@@ -64,6 +62,9 @@ public:
 
     const std::string source_addressing_string() const { return addressing_to_string(m_source_addressing); }
     const std::string destination_addressing_string() const { return addressing_to_string(m_destination_addressing); }
+
+    bool needs_additional_source_word() const;
+    bool needs_additional_destination_word() const;
 
 private:
     std::string m_name;
