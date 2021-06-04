@@ -50,7 +50,7 @@ uint16_t CPU::get_source_operand_value()
         }
 
     default:
-        m_error_string = "Unsupported source addressing: " + std::to_string(static_cast<int>(m_current_instruction->source_addressing()));
+        m_error_string = "Invalid source addressing: " + std::to_string(static_cast<int>(m_current_instruction->source_addressing()));
         return 0;
     };
 
@@ -59,7 +59,7 @@ uint16_t CPU::get_source_operand_value()
 
 void CPU::mov()
 {
-    uint16_t source, destination, address, reg;
+    uint16_t source = 0, address = 0, address_indirect = 0, reg = 0;
 
     source = get_source_operand_value();
 
@@ -68,12 +68,36 @@ void CPU::mov()
     }
 
     switch (m_current_instruction->destination_addressing()) {
-    case Instruction::AddressingMode::DirectRegister:
-        destination = m_current_instruction->destination_register();
-        m_registers[destination] = source;
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        m_bus->write(address, source);
         break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        if (m_bus->has_error()) {
+            m_error_string = m_bus->error_string();
+            return;
+        }
+
+        m_bus->write(address, source);
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->destination_register();
+        m_registers[reg] = source;
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+        m_bus->write(address, source);
+        break;
+
     default:
-        m_error_string = "Unimplemented 'mov' destination addressing: " + m_current_instruction->destination_addressing_string();
+        m_error_string = "Invalid 'mov' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
     };
 }
