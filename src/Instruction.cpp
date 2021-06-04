@@ -26,7 +26,7 @@ Instruction::Instruction(uint16_t data)
 
     auto it = s_opcodes.find(m_opcode);
     if (it == s_opcodes.end()) {
-        m_valid = false;
+        m_error_string = "Opcode is not valid: " + Helpers::value_to_hex_string(opcode, 1);
         return;
     }
 
@@ -46,13 +46,19 @@ Instruction::Instruction(uint16_t data)
             }
         }
 
+        m_source_addressing = static_cast<AddressingMode>(source_addr);
+
         if (!valid_source) {
-            m_valid = false;
+            m_error_string = "Invalid source addressing for '" + m_name + "': " + source_addressing_string();
             return;
         }
 
-        m_source_addressing = static_cast<AddressingMode>(source_addr);
         m_source_register = (data >> 6) & 0x7;
+
+        if (m_source_register > 7) {
+            m_error_string = "Invalid source register for '" + m_name + "': " + std::to_string(m_source_register);
+            return;
+        }
     }
 
     if (m_number_of_operands == 2 || m_number_of_operands == 1) {
@@ -67,13 +73,19 @@ Instruction::Instruction(uint16_t data)
             }
         }
 
+        m_destination_addressing = static_cast<AddressingMode>(dest_addr);
+
         if (!valid_dest) {
-            m_valid = false;
+            m_error_string = "Invalid destination addressing for '" + m_name + "': " + destination_addressing_string();
             return;
         }
 
-        m_destination_addressing = static_cast<AddressingMode>(dest_addr);
         m_destination_register = data & 0x7;
+
+        if (m_destination_register > 7) {
+            m_error_string = "Invalid destination register for '" + m_name + "': " + std::to_string(m_destination_register);
+            return;
+        }
     }
 }
 

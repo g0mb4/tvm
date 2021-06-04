@@ -68,8 +68,8 @@ void CPU::decode()
 {
     m_current_instruction = std::make_shared<Instruction>(m_current_raw_instruction);
 
-    if (!m_current_instruction->is_valid()) {
-        m_error_string = "Invalid instruction: " + Helpers::value_to_hex_string(m_current_raw_instruction);
+    if (m_current_instruction->has_error()) {
+        m_error_string = m_current_instruction->error_string();
         return;
     }
 

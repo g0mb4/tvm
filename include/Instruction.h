@@ -5,7 +5,10 @@
 #include <map>
 #include <string>
 
-class Instruction {
+#include "Error.h"
+#include "Helpers.h"
+
+class Instruction : public Error {
 public:
     enum class OpCode : uint8_t {
         mov = 0,
@@ -59,10 +62,8 @@ public:
     uint16_t additional_word_source() const { return m_additional_word_source; }
     uint16_t additional_word_destination() const { return m_additional_word_destination; }
 
-    const std::string source_addressing_string() const { return addressing_to_string(m_source_addressing); };
-    const std::string destination_addressing_string() const { return addressing_to_string(m_destination_addressing); };
-
-    bool is_valid() const { return m_valid; }
+    const std::string source_addressing_string() const { return addressing_to_string(m_source_addressing); }
+    const std::string destination_addressing_string() const { return addressing_to_string(m_destination_addressing); }
 
 private:
     std::string m_name;
@@ -75,8 +76,6 @@ private:
 
     uint16_t m_additional_word_source;
     uint16_t m_additional_word_destination;
-
-    bool m_valid { true };
 
     const std::string addressing_to_string(AddressingMode) const;
 

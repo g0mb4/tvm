@@ -36,22 +36,10 @@ uint16_t CPU::get_source_operand_value()
 
     case Instruction::AddressingMode::DirectRegister:
         reg = m_current_instruction->source_register();
-
-        if (reg > 7) {
-            m_error_string = "Invalid source register: " + std::to_string(reg);
-            return 0;
-        }
-
         source = m_registers[reg];
 
     case Instruction::AddressingMode::IndirectRegister:
         reg = m_current_instruction->source_register();
-
-        if (reg > 7) {
-            m_error_string = "Invalid source register: " + std::to_string(reg);
-            return 0;
-        }
-
         address = m_registers[reg];
 
         source = m_bus->read(address);
