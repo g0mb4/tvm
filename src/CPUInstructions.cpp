@@ -251,7 +251,6 @@ void CPU::jnc()
     }
 }
 
-// FIXME: remove spagetti-code
 void CPU::jsr()
 {
     uint16_t destination, address, reg;
@@ -259,7 +258,8 @@ void CPU::jsr()
     switch (m_current_instruction->destination_addressing()) {
     case Instruction::AddressingMode::Direct:
         destination = m_current_instruction->additional_word_destination();
-        goto jsr_main;
+        break;
+
     case Instruction::AddressingMode::Indirect:
         address = m_current_instruction->additional_word_destination();
         destination = m_bus->read(address);
@@ -269,7 +269,8 @@ void CPU::jsr()
             return;
         }
 
-        goto jsr_main;
+        break;
+
     case Instruction::AddressingMode::IndirectRegister:
         reg = m_current_instruction->destination_register();
         address = m_registers[reg];
@@ -280,21 +281,21 @@ void CPU::jsr()
             return;
         }
 
-        goto jsr_main;
-    jsr_main:
-        m_stack->push(m_stack_pointer, m_program_counter);
-
-        if (m_stack->has_error()) {
-            m_error_string = m_stack->error_string();
-            return;
-        }
-
-        m_program_counter = destination;
         break;
+
     default:
         m_error_string = "Invalid 'jsr' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
-    };
+    }
+
+    m_stack->push(m_stack_pointer, m_program_counter);
+
+    if (m_stack->has_error()) {
+        m_error_string = m_stack->error_string();
+        return;
+    }
+
+    m_program_counter = destination;
 }
 
 void CPU::rts()
