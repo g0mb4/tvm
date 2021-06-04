@@ -1,8 +1,8 @@
 #include "CPU.h"
 
-void CPU::mov()
+uint16_t CPU::get_source_operand_value()
 {
-    uint16_t source, destination, address, reg;
+    uint16_t source = 0, address = 0, address_indirect = 0, reg = 0;
 
     switch (m_current_instruction->source_addressing()) {
     case Instruction::AddressingMode::Instant:
@@ -11,11 +11,73 @@ void CPU::mov()
     case Instruction::AddressingMode::Direct:
         address = m_current_instruction->additional_word_source();
         source = m_bus->read(address);
+
+        if (m_bus->has_error()) {
+            m_error_string = m_bus->error_string();
+            return 0;
+        }
         break;
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_source();
+        address = m_bus->read(address_indirect);
+
+        if (m_bus->has_error()) {
+            m_error_string = m_bus->error_string();
+            return 0;
+        }
+
+        source = m_bus->read(address);
+
+        if (m_bus->has_error()) {
+            m_error_string = m_bus->error_string();
+            return 0;
+        }
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->source_register();
+
+        if (reg > 7) {
+            m_error_string = "Invalid source register: " + std::to_string(reg);
+            return 0;
+        }
+
+        source = m_registers[reg];
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->source_register();
+
+        if (reg > 7) {
+            m_error_string = "Invalid source register: " + std::to_string(reg);
+            return 0;
+        }
+
+        address = m_registers[reg];
+
+        source = m_bus->read(address);
+
+        if (m_bus->has_error()) {
+            m_error_string = m_bus->error_string();
+            return 0;
+        }
+
     default:
-        m_error_string = "Unimplemented 'mov' source addressing: " + m_current_instruction->source_addressing_string();
-        return;
+        m_error_string = "Unsupported source addressing: " + std::to_string(static_cast<int>(m_current_instruction->source_addressing()));
+        return 0;
     };
+
+    return source;
+}
+
+void CPU::mov()
+{
+    uint16_t source, destination, address, reg;
+
+    source = get_source_operand_value();
+
+    if (has_error()) {
+        return;
+    }
 
     switch (m_current_instruction->destination_addressing()) {
     case Instruction::AddressingMode::DirectRegister:
@@ -37,7 +99,7 @@ void CPU::lea()
         source = m_current_instruction->additional_word_source();
         break;
     default:
-        m_error_string = "Unimplemented 'lea' source addressing: " + m_current_instruction->source_addressing_string();
+        m_error_string = "Invalid 'lea' source addressing: " + m_current_instruction->source_addressing_string();
         return;
     };
 

@@ -46,6 +46,8 @@ private:
     void decode();
     void execute();
 
+    uint16_t get_source_operand_value();
+
     void mov();
     void lea();
     void jnz();
