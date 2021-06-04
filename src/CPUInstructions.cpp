@@ -126,25 +126,6 @@ void CPU::lea()
     };
 }
 
-void CPU::jnz()
-{
-    if (m_zero_flag) {
-        return;
-    }
-
-    uint16_t destination;
-
-    switch (m_current_instruction->destination_addressing()) {
-    case Instruction::AddressingMode::Direct:
-        destination = m_current_instruction->additional_word_destination();
-        m_program_counter = destination;
-        break;
-    default:
-        m_error_string = "Unimplemented 'jnz' destination addressing: " + m_current_instruction->destination_addressing_string();
-        return;
-    };
-}
-
 void CPU::hlt()
 {
     m_halted = true;
@@ -214,23 +195,60 @@ void CPU::inc()
     };
 }
 
-void CPU::jnc()
+void CPU::jump()
 {
-    if (m_carry_flag) {
-        return;
-    }
-
-    uint16_t destination;
+    uint16_t destination, address, reg;
 
     switch (m_current_instruction->destination_addressing()) {
     case Instruction::AddressingMode::Direct:
         destination = m_current_instruction->additional_word_destination();
         m_program_counter = destination;
         break;
+
+    case Instruction::AddressingMode::Indirect:
+        address = m_current_instruction->additional_word_destination();
+        destination = m_bus->read(address);
+
+        if (m_bus->has_error()) {
+            m_error_string = m_bus->error_string();
+            return;
+        }
+
+        m_program_counter = destination;
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+
+        destination = m_bus->read(address);
+
+        if (m_bus->has_error()) {
+            m_error_string = m_bus->error_string();
+            return;
+        }
+
+        m_program_counter = destination;
+        break;
+
     default:
-        m_error_string = "Unimplemented 'jnc' destination addressing: " + m_current_instruction->destination_addressing_string();
+        m_error_string = "Invalid 'jump' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
     };
+}
+
+void CPU::jnz()
+{
+    if (m_zero_flag == false) {
+        jump();
+    }
+}
+
+void CPU::jnc()
+{
+    if (m_carry_flag == false) {
+        jump();
+    }
 }
 
 // FIXME: remove spagetti-code

@@ -58,4 +58,6 @@ private:
     void jnc();
     void jsr();
     void rts();
+
+    void jump();
 };
