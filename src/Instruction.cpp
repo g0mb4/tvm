@@ -26,7 +26,7 @@ Instruction::Instruction(uint16_t data)
 
     auto it = s_opcodes.find(m_opcode);
     if (it == s_opcodes.end()) {
-        m_error_string = "Opcode is not valid: " + Helpers::value_to_hex_string(opcode, 1);
+        m_error_string = "Opcode is not valid: " + Helpers::value_to_hex_string(opcode, 1) + " in " + Helpers::value_to_hex_string(data);
         return;
     }
 
@@ -49,14 +49,14 @@ Instruction::Instruction(uint16_t data)
         m_source_addressing = static_cast<AddressingMode>(source_addr);
 
         if (!valid_source) {
-            m_error_string = "Invalid source addressing for '" + m_name + "': " + source_addressing_string();
+            m_error_string = "Invalid source addressing for '" + m_name + "': " + source_addressing_string() + " in " + Helpers::value_to_hex_string(data);
             return;
         }
 
         m_source_register = (data >> 6) & 0x7;
 
         if (m_source_register > 7) {
-            m_error_string = "Invalid source register for '" + m_name + "': " + std::to_string(m_source_register);
+            m_error_string = "Invalid source register for '" + m_name + "': " + std::to_string(m_source_register) + " in " + Helpers::value_to_hex_string(data);
             return;
         }
     }
@@ -76,14 +76,14 @@ Instruction::Instruction(uint16_t data)
         m_destination_addressing = static_cast<AddressingMode>(dest_addr);
 
         if (!valid_dest) {
-            m_error_string = "Invalid destination addressing for '" + m_name + "': " + destination_addressing_string();
+            m_error_string = "Invalid destination addressing for '" + m_name + "': " + destination_addressing_string() + " in " + Helpers::value_to_hex_string(data);
             return;
         }
 
         m_destination_register = data & 0x7;
 
         if (m_destination_register > 7) {
-            m_error_string = "Invalid destination register for '" + m_name + "': " + std::to_string(m_destination_register);
+            m_error_string = "Invalid destination register for '" + m_name + "': " + std::to_string(m_destination_register) + " in " + Helpers::value_to_hex_string(data);
             return;
         }
     }
