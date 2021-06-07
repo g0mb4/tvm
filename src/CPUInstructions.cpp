@@ -556,17 +556,142 @@ void CPU::div()
 
 void CPU::inc()
 {
-    uint16_t destination;
+    uint16_t destination, address, address_indirect, reg;
+    int32_t result;
 
     switch (m_current_instruction->destination_addressing()) {
-    case Instruction::AddressingMode::DirectRegister:
-        destination = m_current_instruction->destination_register();
-        m_registers[destination] += 1;
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = destination + 1;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
         break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        BUS_ERROR();
+
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = destination + 1;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->destination_register();
+        destination = m_registers[reg];
+
+        result = destination + 1;
+
+        m_registers[reg] = (uint16_t)result;
+
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = destination + 1;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+
+        break;
+
     default:
-        m_error_string = "Unimplemented 'inc' destination addressing: " + m_current_instruction->destination_addressing_string();
+        m_error_string = "Invalid 'inc' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
-    };
+    }
+
+    m_zero_flag = result == 0;
+}
+
+void CPU::dec()
+{
+    uint16_t destination, address, address_indirect, reg;
+    int32_t result;
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = destination - 1;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+        break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        BUS_ERROR();
+
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = destination - 1;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->destination_register();
+        destination = m_registers[reg];
+
+        result = destination - 1;
+
+        m_registers[reg] = (uint16_t)result;
+
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = destination - 1;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+
+        break;
+
+    default:
+        m_error_string = "Invalid 'dec' destination addressing: " + m_current_instruction->destination_addressing_string();
+        return;
+    }
+
+    m_zero_flag = result == 0;
 }
 
 void CPU::jump()

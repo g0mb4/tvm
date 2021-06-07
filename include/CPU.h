@@ -56,6 +56,7 @@ private:
     void div();
     void lea();
     void inc();
+    void dec();
     void jnz();
     void jnc();
     void prn();
