@@ -50,6 +50,7 @@ private:
 
     void mov();
     void cmp();
+    void add();
     void sub();
     void lea();
     void inc();

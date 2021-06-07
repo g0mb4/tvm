@@ -123,6 +123,9 @@ void CPU::execute()
     case Instruction::OpCode::cmp:
         cmp();
         break;
+    case Instruction::OpCode::add:
+        add();
+        break;
     default:
         m_error_string = "Invalid instruction:" + Helpers::value_to_hex_string(m_current_raw_instruction);
     }

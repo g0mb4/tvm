@@ -258,6 +258,79 @@ void CPU::cmp()
     m_zero_flag = result == 0;
 }
 
+void CPU::add()
+{
+    uint16_t source, destination, address, address_indirect, reg;
+    int32_t result;
+
+    source = get_source_operand_value();
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = source + destination;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+        break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        BUS_ERROR();
+
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = source + destination;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->destination_register();
+        destination = m_registers[reg];
+
+        result = source + destination;
+
+        m_registers[reg] = (uint16_t)result;
+
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = source + destination;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+
+        break;
+
+    default:
+        m_error_string = "Invalid 'add' destination addressing: " + m_current_instruction->destination_addressing_string();
+        return;
+    }
+
+    m_zero_flag = result == 0;
+    m_carry_flag = result > 0xffff;
+}
+
 void CPU::sub()
 {
     uint16_t source, destination, address, reg;
