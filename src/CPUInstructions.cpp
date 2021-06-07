@@ -1,5 +1,17 @@
 #include "CPU.h"
 
+#define BUS_ERROR()                             \
+    if (m_bus->has_error()) {                   \
+        m_error_string = m_bus->error_string(); \
+        return;                                 \
+    }
+
+#define BUS_ERROR_0()                           \
+    if (m_bus->has_error()) {                   \
+        m_error_string = m_bus->error_string(); \
+        return 0;                               \
+    }
+
 uint16_t CPU::get_source_operand_value()
 {
     uint16_t source = 0, address = 0, address_indirect = 0, reg = 0;
@@ -8,30 +20,23 @@ uint16_t CPU::get_source_operand_value()
     case Instruction::AddressingMode::Instant:
         source = m_current_instruction->additional_word_source();
         break;
+
     case Instruction::AddressingMode::Direct:
         address = m_current_instruction->additional_word_source();
         source = m_bus->read(address);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return 0;
-        }
+        BUS_ERROR_0();
         break;
+
     case Instruction::AddressingMode::Indirect:
         address_indirect = m_current_instruction->additional_word_source();
         address = m_bus->read(address_indirect);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return 0;
-        }
+        BUS_ERROR_0();
 
         source = m_bus->read(address);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return 0;
-        }
+        BUS_ERROR_0();
         break;
 
     case Instruction::AddressingMode::DirectRegister:
@@ -44,10 +49,8 @@ uint16_t CPU::get_source_operand_value()
 
         source = m_bus->read(address);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return 0;
-        }
+        BUS_ERROR_0();
+        break;
 
     default:
         m_error_string = "Invalid source addressing: " + std::to_string(static_cast<int>(m_current_instruction->source_addressing()));
@@ -77,10 +80,7 @@ void CPU::mov()
         address_indirect = m_current_instruction->additional_word_destination();
         address = m_bus->read(address_indirect);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return;
-        }
+        BUS_ERROR();
 
         m_bus->write(address, source);
         break;
@@ -125,10 +125,7 @@ void CPU::lea()
         address_indirect = m_current_instruction->additional_word_destination();
         address = m_bus->read(address_indirect);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return;
-        }
+        BUS_ERROR();
 
         m_bus->write(address, source);
         break;
@@ -157,15 +154,52 @@ void CPU::hlt()
 
 void CPU::prn()
 {
-    uint16_t destination, address, reg;
+    uint16_t destination, address, address_indirect, reg;
 
     switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::Instant:
+        destination = m_current_instruction->additional_word_destination();
+        m_bus->write(Display::address, destination);
+        break;
+
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        m_bus->write(Display::address, destination);
+        break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        BUS_ERROR();
+
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        m_bus->write(Display::address, destination);
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->destination_register();
+        destination = m_registers[reg];
+        m_bus->write(Display::address, destination);
+        break;
+
     case Instruction::AddressingMode::IndirectRegister:
         reg = m_current_instruction->destination_register();
         address = m_registers[reg];
         destination = m_bus->read(address);
+
+        BUS_ERROR();
+
         m_bus->write(Display::address, destination);
         break;
+
     default:
         m_error_string = "Unimplemented 'mov' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
@@ -233,10 +267,7 @@ void CPU::jump()
         address = m_current_instruction->additional_word_destination();
         destination = m_bus->read(address);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return;
-        }
+        BUS_ERROR();
 
         m_program_counter = destination;
         break;
@@ -247,10 +278,7 @@ void CPU::jump()
 
         destination = m_bus->read(address);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return;
-        }
+        BUS_ERROR();
 
         m_program_counter = destination;
         break;
@@ -288,10 +316,7 @@ void CPU::jsr()
         address = m_current_instruction->additional_word_destination();
         destination = m_bus->read(address);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return;
-        }
+        BUS_ERROR();
 
         break;
 
@@ -300,10 +325,7 @@ void CPU::jsr()
         address = m_registers[reg];
         destination = m_bus->read(address);
 
-        if (m_bus->has_error()) {
-            m_error_string = m_bus->error_string();
-            return;
-        }
+        BUS_ERROR();
 
         break;
 
