@@ -135,6 +135,9 @@ void CPU::execute()
     case Instruction::OpCode::dec:
         dec();
         break;
+    case Instruction::OpCode::shl:
+        shl();
+        break;
     default:
         m_error_string = "Invalid instruction:" + Helpers::value_to_hex_string(m_current_raw_instruction);
     }

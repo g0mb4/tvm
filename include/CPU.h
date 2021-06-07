@@ -59,6 +59,7 @@ private:
     void dec();
     void jnz();
     void jnc();
+    void shl();
     void prn();
     void jsr();
     void rts();

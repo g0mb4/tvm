@@ -14,7 +14,7 @@
 
 uint16_t CPU::get_source_operand_value()
 {
-    uint16_t source = 0, address = 0, address_indirect = 0, reg = 0;
+    uint16_t source, address, address_indirect, reg;
 
     switch (m_current_instruction->source_addressing()) {
     case Instruction::AddressingMode::Instant:
@@ -42,6 +42,7 @@ uint16_t CPU::get_source_operand_value()
     case Instruction::AddressingMode::DirectRegister:
         reg = m_current_instruction->source_register();
         source = m_registers[reg];
+        break;
 
     case Instruction::AddressingMode::IndirectRegister:
         reg = m_current_instruction->source_register();
@@ -62,7 +63,7 @@ uint16_t CPU::get_source_operand_value()
 
 void CPU::mov()
 {
-    uint16_t source = 0, address = 0, address_indirect = 0, reg = 0;
+    uint16_t source, address, address_indirect, reg;
 
     source = get_source_operand_value();
 
@@ -255,7 +256,7 @@ void CPU::cmp()
 
     int32_t result = destination - source;
 
-    m_zero_flag = result == 0;
+    m_zero_flag = (result & 0xffff) == 0;
 }
 
 void CPU::add()
@@ -327,7 +328,7 @@ void CPU::add()
         return;
     }
 
-    m_zero_flag = result == 0;
+    m_zero_flag = (result & 0xffff) == 0;
     m_carry_flag = result > 0xffff;
 }
 
@@ -400,7 +401,7 @@ void CPU::sub()
         return;
     }
 
-    m_zero_flag = result == 0;
+    m_zero_flag = (result & 0xffff) == 0;
     m_carry_flag = source > destination;
 }
 
@@ -473,7 +474,7 @@ void CPU::mul()
         return;
     }
 
-    m_zero_flag = result == 0;
+    m_zero_flag = (result & 0xffff) == 0;
     m_carry_flag = result > 0xffff;
 }
 
@@ -551,7 +552,7 @@ void CPU::div()
         return;
     }
 
-    m_zero_flag = result == 0;
+    m_zero_flag = (result & 0xffff) == 0;
 }
 
 void CPU::inc()
@@ -621,7 +622,7 @@ void CPU::inc()
         return;
     }
 
-    m_zero_flag = result == 0;
+    m_zero_flag = (result & 0xffff) == 0;
 }
 
 void CPU::dec()
@@ -691,7 +692,7 @@ void CPU::dec()
         return;
     }
 
-    m_zero_flag = result == 0;
+    m_zero_flag = (result & 0xffff) == 0;
 }
 
 void CPU::jump()
@@ -794,4 +795,117 @@ void CPU::rts()
     }
 
     m_program_counter = return_point;
+}
+
+// I think source and destination is swapped.
+void CPU::shl()
+{
+    uint16_t source, destination, address, address_indirect, reg;
+    uint32_t result;
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::Instant:
+        destination = m_bus->read(address);
+        break;
+
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+        break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        BUS_ERROR();
+
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->destination_register();
+        destination = m_registers[reg];
+
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+        break;
+
+    default:
+        m_error_string = "Invalid 'shl' destination addressing: " + m_current_instruction->destination_addressing_string();
+        return;
+    }
+
+    switch (m_current_instruction->source_addressing()) {
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_source();
+        source = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = source << destination;
+
+        m_bus->write(address, (uint16_t)result);
+        BUS_ERROR();
+
+        break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_source();
+        address = m_bus->read(address_indirect);
+
+        BUS_ERROR();
+
+        source = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = source << destination;
+
+        m_bus->write(address, (uint16_t)result);
+        BUS_ERROR();
+
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->source_register();
+        source = m_registers[reg];
+
+        result = source << destination;
+
+        m_bus->write(address, (uint16_t)result);
+        BUS_ERROR();
+
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->source_register();
+        address = m_registers[reg];
+
+        source = m_bus->read(address);
+        BUS_ERROR();
+
+        result = source << destination;
+
+        m_bus->write(address, (uint16_t)result);
+        BUS_ERROR();
+
+        break;
+
+    default:
+        m_error_string = "Invalid 'shl' source addressing: " + m_current_instruction->source_addressing_string();
+        return;
+    };
+
+    m_zero_flag = (result & 0xffff) == 0;
+    m_carry_flag = result > 0xffff;
 }
