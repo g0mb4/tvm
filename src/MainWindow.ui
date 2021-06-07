@@ -421,7 +421,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Reset Machine</string>
+      <string>Reset CPU + Display</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_run">
