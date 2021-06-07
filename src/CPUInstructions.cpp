@@ -253,7 +253,7 @@ void CPU::cmp()
         return;
     }
 
-    int32_t result = source - destination;
+    int32_t result = destination - source;
 
     m_zero_flag = result == 0;
 }
@@ -272,7 +272,7 @@ void CPU::add()
 
         BUS_ERROR();
 
-        result = source + destination;
+        result = destination + source;
 
         m_bus->write(address, (uint16_t)result);
 
@@ -289,7 +289,7 @@ void CPU::add()
 
         BUS_ERROR();
 
-        result = source + destination;
+        result = destination + source;
 
         m_bus->write(address, (uint16_t)result);
 
@@ -301,7 +301,7 @@ void CPU::add()
         reg = m_current_instruction->destination_register();
         destination = m_registers[reg];
 
-        result = source + destination;
+        result = destination + source;
 
         m_registers[reg] = (uint16_t)result;
 
@@ -314,7 +314,7 @@ void CPU::add()
 
         BUS_ERROR();
 
-        result = source + destination;
+        result = destination + source;
 
         m_bus->write(address, (uint16_t)result);
 
@@ -418,7 +418,7 @@ void CPU::mul()
 
         BUS_ERROR();
 
-        result = source * destination;
+        result = destination * source;
 
         m_bus->write(address, (uint16_t)result);
 
@@ -435,7 +435,7 @@ void CPU::mul()
 
         BUS_ERROR();
 
-        result = source * destination;
+        result = destination * source;
 
         m_bus->write(address, (uint16_t)result);
 
@@ -447,7 +447,7 @@ void CPU::mul()
         reg = m_current_instruction->destination_register();
         destination = m_registers[reg];
 
-        result = source * destination;
+        result = destination * source;
 
         m_registers[reg] = (uint16_t)result;
 
@@ -460,7 +460,7 @@ void CPU::mul()
 
         BUS_ERROR();
 
-        result = source * destination;
+        result = destination * source;
 
         m_bus->write(address, (uint16_t)result);
 
@@ -475,6 +475,83 @@ void CPU::mul()
 
     m_zero_flag = result == 0;
     m_carry_flag = result > 0xffff;
+}
+
+void CPU::div()
+{
+    uint16_t source, destination, address, address_indirect, reg;
+    int32_t result;
+
+    source = get_source_operand_value();
+
+    if (source == 0) {
+        m_error_string = "Division by zero.";
+        return;
+    }
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = (uint16_t)destination / (uint16_t)source;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+        break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        BUS_ERROR();
+
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = (uint16_t)destination / (uint16_t)source;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->destination_register();
+        destination = m_registers[reg];
+
+        result = (uint16_t)destination / (uint16_t)source;
+
+        m_registers[reg] = (uint16_t)result;
+
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = (uint16_t)destination / (uint16_t)source;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+
+        break;
+
+    default:
+        m_error_string = "Invalid 'div' destination addressing: " + m_current_instruction->destination_addressing_string();
+        return;
+    }
+
+    m_zero_flag = result == 0;
 }
 
 void CPU::inc()

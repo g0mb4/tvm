@@ -53,6 +53,7 @@ private:
     void add();
     void sub();
     void mul();
+    void div();
     void lea();
     void inc();
     void jnz();
