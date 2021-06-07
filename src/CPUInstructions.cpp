@@ -333,34 +333,75 @@ void CPU::add()
 
 void CPU::sub()
 {
-    uint16_t source, destination, address, reg;
+    uint16_t source, destination, address, address_indirect, reg;
+    int32_t result;
 
-    switch (m_current_instruction->source_addressing()) {
-    case Instruction::AddressingMode::Instant:
-        source = m_current_instruction->additional_word_source();
-        break;
-    case Instruction::AddressingMode::Direct:
-        address = m_current_instruction->additional_word_source();
-        source = m_bus->read(address);
-        break;
-    default:
-        m_error_string = "Unimplemented 'sub' source addressing: " + m_current_instruction->source_addressing_string();
-        return;
-    };
+    source = get_source_operand_value();
 
     switch (m_current_instruction->destination_addressing()) {
-    case Instruction::AddressingMode::DirectRegister:
-        destination = m_current_instruction->destination_register();
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        destination = m_bus->read(address);
 
-        m_carry_flag = source > m_registers[destination];
-        m_registers[destination] -= source;
-        m_zero_flag = m_registers[destination] == 0;
+        BUS_ERROR();
+
+        result = destination - source;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+        break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        BUS_ERROR();
+
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = destination - source;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
 
         break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->destination_register();
+        destination = m_registers[reg];
+
+        result = destination - source;
+
+        m_registers[reg] = (uint16_t)result;
+
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+
+        result = destination - source;
+
+        m_bus->write(address, (uint16_t)result);
+
+        BUS_ERROR();
+
+        break;
+
     default:
-        m_error_string = "Unimplemented 'sub' destination addressing: " + m_current_instruction->destination_addressing_string();
+        m_error_string = "Invalid 'sub' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
-    };
+    }
+
+    m_zero_flag = result == 0;
+    m_carry_flag = source > destination;
 }
 
 void CPU::inc()
