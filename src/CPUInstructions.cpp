@@ -104,7 +104,7 @@ void CPU::mov()
 
 void CPU::lea()
 {
-    uint16_t source, destination;
+    uint16_t source, destination, address, address_indirect, reg;
 
     switch (m_current_instruction->source_addressing()) {
     case Instruction::AddressingMode::Direct:
@@ -116,12 +116,36 @@ void CPU::lea()
     };
 
     switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        m_bus->write(address, source);
+        break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        if (m_bus->has_error()) {
+            m_error_string = m_bus->error_string();
+            return;
+        }
+
+        m_bus->write(address, source);
+        break;
+
     case Instruction::AddressingMode::DirectRegister:
         destination = m_current_instruction->destination_register();
         m_registers[destination] = source;
         break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+        m_bus->write(address, source);
+        break;
+
     default:
-        m_error_string = "Unimplemented 'lea' destination addressing: " + m_current_instruction->destination_addressing_string();
+        m_error_string = "Invalid 'lea' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
     };
 }
