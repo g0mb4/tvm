@@ -201,9 +201,61 @@ void CPU::prn()
         break;
 
     default:
-        m_error_string = "Unimplemented 'mov' destination addressing: " + m_current_instruction->destination_addressing_string();
+        m_error_string = "Invalid 'prn' destination addressing: " + m_current_instruction->destination_addressing_string();
         return;
     }
+}
+
+void CPU::cmp()
+{
+    uint16_t source, destination, address, address_indirect, reg;
+
+    source = get_source_operand_value();
+
+    switch (m_current_instruction->destination_addressing()) {
+    case Instruction::AddressingMode::Instant:
+        destination = m_current_instruction->additional_word_destination();
+        break;
+
+    case Instruction::AddressingMode::Direct:
+        address = m_current_instruction->additional_word_destination();
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+        break;
+
+    case Instruction::AddressingMode::Indirect:
+        address_indirect = m_current_instruction->additional_word_destination();
+        address = m_bus->read(address_indirect);
+
+        BUS_ERROR();
+
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+        break;
+
+    case Instruction::AddressingMode::DirectRegister:
+        reg = m_current_instruction->destination_register();
+        destination = m_registers[reg];
+        break;
+
+    case Instruction::AddressingMode::IndirectRegister:
+        reg = m_current_instruction->destination_register();
+        address = m_registers[reg];
+        destination = m_bus->read(address);
+
+        BUS_ERROR();
+        break;
+
+    default:
+        m_error_string = "Invalid 'cmp' destination addressing: " + m_current_instruction->destination_addressing_string();
+        return;
+    }
+
+    int32_t result = source - destination;
+
+    m_zero_flag = result == 0;
 }
 
 void CPU::sub()

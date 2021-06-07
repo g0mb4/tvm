@@ -120,7 +120,10 @@ void CPU::execute()
     case Instruction::OpCode::rts:
         rts();
         break;
+    case Instruction::OpCode::cmp:
+        cmp();
+        break;
     default:
-        m_error_string = "Unsupported instruction: " + m_current_instruction->name() + " (" + Helpers::value_to_hex_string(m_current_raw_instruction) + ")";
+        m_error_string = "Invalid instruction:" + Helpers::value_to_hex_string(m_current_raw_instruction);
     }
 }

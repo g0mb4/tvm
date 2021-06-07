@@ -49,15 +49,16 @@ private:
     uint16_t get_source_operand_value();
 
     void mov();
-    void lea();
-    void jnz();
-    void hlt();
-    void prn();
+    void cmp();
     void sub();
+    void lea();
     void inc();
+    void jnz();
     void jnc();
+    void prn();
     void jsr();
     void rts();
+    void hlt();
 
     void jump();
 };
