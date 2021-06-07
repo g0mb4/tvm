@@ -126,6 +126,9 @@ void CPU::execute()
     case Instruction::OpCode::add:
         add();
         break;
+    case Instruction::OpCode::mul:
+        mul();
+        break;
     default:
         m_error_string = "Invalid instruction:" + Helpers::value_to_hex_string(m_current_raw_instruction);
     }
