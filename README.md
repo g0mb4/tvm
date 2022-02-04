@@ -14,12 +14,12 @@ Use "**File** -> **Open**" to load a binary file, then press "**Step**" for step
 
 You can use the command line intarface to load a file:
 ```bash
-tas <binary_file>
+tvm <binary_file>
 ```
 
 or you can run the program on start:
 ```bash
-tas -s,--start <binary_file>
+tvm --start <binary_file>
 ```
 
 # Compilation of tvm
